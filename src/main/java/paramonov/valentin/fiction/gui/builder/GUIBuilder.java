@@ -1,10 +1,13 @@
 package paramonov.valentin.fiction.gui.builder;
 
-import java.awt.Frame;
-import java.awt.Button;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
-public interface GUIBuilder {
-    Button addButton(
+public interface GUIBuilder<F extends Frame> {
+    void buildGUI(F frame);
+
+    Button createButton(
         String tag, ActionListener listener, String actionCommand);
+
+    Panel createPanel(LayoutManager layout);
 }
