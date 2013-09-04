@@ -1,6 +1,7 @@
 package paramonov.valentin.fiction.gui.builder;
 
-public enum PanelEnum {
+public enum Component {
     MAIN_PANEL,
-    OPTION_PANEL
+    OPTION_PANEL,
+    CANVAS
 }

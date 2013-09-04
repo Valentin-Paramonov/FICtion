@@ -6,35 +6,16 @@ import paramonov.valentin.fiction.gui.builder.AppGUIBuilder;
 import java.awt.*;
 import java.awt.event.*;
 
-import static paramonov.valentin.fiction.gui.builder.PanelEnum.MAIN_PANEL;
-import static paramonov.valentin.fiction.gui.builder.PanelEnum.OPTION_PANEL;
+import static paramonov.valentin.fiction.gui.builder.Component.MAIN_PANEL;
+import static paramonov.valentin.fiction.gui.builder.Component.OPTION_PANEL;
 
 public class App
 extends Frame
 implements ActionListener, WindowListener, ItemListener, TextListener {
-    private static final long serialVersionUID = 0xfade;
-    private static String TITLE = "FICtion";
-    private static final int CANVAS_WIDTH = 768;
-    private static final int CANVAS_HEIGHT = 432;
-    
-    //private static final int MINCOUNT = 0x10;
-    //private static final int MAXCOUNT = 0x1000;
-    //private static final int FPS = 60;
-
-    //private MyGLCanvas canvas;
-    private FileDialog fds;
-    private FileDialog fdo;
-    private Button open;
-    private Button strt;
-    private Button paus;
-    private Button stop;
-    private Button opts;
-    private Choice popsize;
-    private TextField genecount;
-    
-
-    private String prevcount;
-   // private int popsize = 16;
+    public static final long serialVersionUID = 0xfade;
+    public static String TITLE = "FICtion";
+    public static int CANVAS_WIDTH = 768;
+    public static int CANVAS_HEIGHT = 432;
 
     public App() {
         super(TITLE);
@@ -42,7 +23,6 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
         this.addWindowListener(this);
 
         buildGUI();
-        //animator.start();
     }
 
     public void buildGUI() {
@@ -50,7 +30,7 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
     }
 
     public void start() {
-        this.setPreferredSize(new Dimension(900,450));
+//        this.setPreferredSize(new Dimension(900,450));
         this.pack();
         this.setVisible(true);
     }
