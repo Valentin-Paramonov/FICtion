@@ -1,14 +1,15 @@
 package paramonov.valentin.fiction.gui.builder;
 
 import paramonov.valentin.fiction.gui.App;
+import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
 
+import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 import static paramonov.valentin.fiction.gui.action.Action.CLOSE_OPTIONS;
 import static paramonov.valentin.fiction.gui.action.Action.OPEN_OPTIONS;
-import static paramonov.valentin.fiction.gui.builder.PanelEnum.MAIN_PANEL;
-import static paramonov.valentin.fiction.gui.builder.PanelEnum.OPTION_PANEL;
+import static paramonov.valentin.fiction.gui.builder.Component.*;
 
 public class AppGUIBuilder implements GUIBuilder<App> {
     /*
@@ -28,7 +29,7 @@ public class AppGUIBuilder implements GUIBuilder<App> {
     */
     @Override
     public void buildGUI(App app) {
-        app.setMinimumSize(new Dimension(900, 450));
+//        app.setMinimumSize(new Dimension(900, 450));
 //        frame.setPreferredSize(new Dimension(900,450));
         app.setLayout(new CardLayout());
 
@@ -162,12 +163,20 @@ public class AppGUIBuilder implements GUIBuilder<App> {
 
     private Panel createCanvasPanel(App frame) {
         Panel canPan = createFlowPanel();
+        GLCanvas canvas = new AppGLCanvas();
+
+        canvas.setSize(
+            new Dimension(
+                App.CANVAS_WIDTH,
+                App.CANVAS_HEIGHT));
 //        Dimension dim = frame.getPreferredSize();
 
 //        canPan.setPreferredSize(
 //            new Dimension(
 //                (int) (dim.getWidth() * 0.85),
 //                (int) (dim.getHeight() * 0.9)));
+
+        canPan.add(canvas, CANVAS.toString());
 
         return canPan;
     }
