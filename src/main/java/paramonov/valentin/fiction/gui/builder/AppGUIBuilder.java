@@ -7,9 +7,9 @@ import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import static paramonov.valentin.fiction.gui.action.Action.CLOSE_OPTIONS;
-import static paramonov.valentin.fiction.gui.action.Action.OPEN_OPTIONS;
-import static paramonov.valentin.fiction.gui.builder.Component.*;
+import static paramonov.valentin.fiction.gui.action.Action.*;
+import static paramonov.valentin.fiction.gui.builder.Component.CANVAS;
+import static paramonov.valentin.fiction.gui.builder.Component.OPTION_PANEL;
 
 public class AppGUIBuilder implements GUIBuilder<App> {
     /*
@@ -37,89 +37,6 @@ public class AppGUIBuilder implements GUIBuilder<App> {
 
         buildOptionPanel(app);
 
-
-
-//         opts = new Button("Options");
-//         opts.addActionListener(this);
-//         opts.setActionCommand("Options");
-//         buttpan.add(opts);
-//
-//         optpan.add(new Label("Population size:"));
-//
-//         popsize = new Choice();
-//         popsize.setBackground(Color.white);
-//         popsize.setName("Population Size");
-//         for(int i = 0x8; i <= 0x80; i++) {
-//             popsize.add(Integer.toString(i));
-//         }
-//         popsize.select("64");
-//         popsize.addItemListener(this);
-//         optpan.add(popsize);
-//
-//         optpan.add(new Label("Gene count:"));
-//
-//         genecount = new TextField("256", 4);
-//         genecount.setName("Gene Count");
-//         genecount.addTextListener(this);
-//         optpan.add(genecount);
-//
-//         prevcount = genecount.getText();
-//
-//         Button clos = new Button("Close");
-//         clos.addActionListener(this);
-//         clos.setActionCommand("Close");
-//         optpan.add(clos);
-//
-//         mainpan.add(canpan);
-//         mainpan.add(buttpanpan);
-//
-//         canvas = new MyGLCanvas();
-//         canvas.setSize(
-//             new Dimension(
-//                 CANVAS_WIDTH, CANVAS_HEIGHT
-//             )
-//         );
-//         canpan.add(canvas);
-//
-//         //final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-//
-//         open = new Button("Open");
-//         open.addActionListener(this);
-//         open.setActionCommand("Open");
-//         buttpan.add(open);
-//         //butt1.setPreferredSize(new Dimension(85,25));
-//
-//         strt = new Button("Start");
-//         strt.addActionListener(this);
-//         strt.setActionCommand("Start");
-//         strt.setEnabled(false);
-//         buttpan.add(strt);
-//
-//         paus = new Button("Pause");
-//         paus.addActionListener(this);
-//         paus.setActionCommand("Pause");
-//         paus.setEnabled(false);
-//         buttpan.add(paus);
-//
-//         stop = new Button("Stop");
-//         stop.addActionListener(this);
-//         stop.setActionCommand("Stop");
-//         stop.setEnabled(false);
-//         buttpan.add(stop);
-//
-//         /*butt2 = new Button("Repaint");
-//         butt2.addActionListener(this);
-//         butt2.setActionCommand("Repaint");
-//         butt2.setEnabled(false);*/
-//         //butt1.setPreferredSize(new Dimension(85,25));
-//
-//         Button save = new Button("Save");
-//         save.addActionListener(this);
-//         save.setActionCommand("Save");
-//         buttpan.add(save);
-//         //butt.setEnabled(false);
-//         //butt2.setPreferredSize(new Dimension(85,25));
-//
 //         FilenameFilter ff = new FilenameFilter() {
 //             public boolean accept(File dir, String name) {
 //                 return (
@@ -140,51 +57,48 @@ public class AppGUIBuilder implements GUIBuilder<App> {
     }
 
     private void buildOptionPanel(App frame) {
-        Panel optpan = createGridPanel(3, 2, 10, 10);
+        Panel optionPanel = createGridPanel(3, 2, 10, 10);
 
-        optpan.add(
+        optionPanel.add(
             createButton("CLOSE", frame, CLOSE_OPTIONS.toString()));
 
-        frame.add(optpan, OPTION_PANEL.toString());
+        frame.add(optionPanel, OPTION_PANEL.toString());
     }
 
     private void buildMainPanel(App frame) {
-        Panel mainpan = createFlowPanel();
-        mainpan.setBackground(Color.WHITE);
+        Panel mainPanel = createFlowPanel();
+        mainPanel.setBackground(Color.WHITE);
 
-        mainpan.add(
-            createCanvasPanel(frame));
+        frame.add(mainPanel);
 
-        mainpan.add(
-            createButtonPanel(frame));
+        mainPanel.add(
+            buildCanvasPanel());
 
-        frame.add(mainpan, MAIN_PANEL.toString());
+        mainPanel.add(
+            buildButtonPanel(frame));
     }
 
-    private Panel createCanvasPanel(App frame) {
-        Panel canPan = createFlowPanel();
+    private Panel buildCanvasPanel() {
+        Panel canvasPanel = createFlowPanel();
         GLCanvas canvas = new AppGLCanvas();
 
         canvas.setSize(
             new Dimension(
                 App.CANVAS_WIDTH,
                 App.CANVAS_HEIGHT));
-//        Dimension dim = frame.getPreferredSize();
 
-//        canPan.setPreferredSize(
-//            new Dimension(
-//                (int) (dim.getWidth() * 0.85),
-//                (int) (dim.getHeight() * 0.9)));
+        canvasPanel.add(
+            canvas,
+            CANVAS.toString(),
+            0);
 
-        canPan.add(canvas, CANVAS.toString());
-
-        return canPan;
+        return canvasPanel;
     }
 
-    private Panel createButtonPanel(App frame) {
-        Panel buttPan = createFlowPanel();
+    private Panel buildButtonPanel(App frame) {
+        Panel buttonPanel = createFlowPanel();
 
-        Panel centerPan = createGridPanel(2, 1, 0, 10);
+        Panel centralPanel = createGridPanel(2, 1, 0, 10);
 
         Panel operationButtonPan = createFlowPanel();
         operationButtonPan.setBackground(Color.WHITE);
@@ -192,24 +106,45 @@ public class AppGUIBuilder implements GUIBuilder<App> {
         Panel optionButtonPan = createFlowPanel();
         optionButtonPan.setBackground(Color.WHITE);
 
-        centerPan.add(operationButtonPan);
-        centerPan.add(optionButtonPan);
+        centralPanel.add(operationButtonPan);
+        centralPanel.add(optionButtonPan);
 
-        buttPan.add(centerPan);
-//        Dimension dim = frame.getPreferredSize();
-
-//        buttPan.setPreferredSize(
-//            new Dimension(
-//                (int) (dim.getWidth() * 0.10),
-//                (int) (dim.getHeight() * 0.9)));
+        buttonPanel.add(centralPanel);
 
         operationButtonPan.add(
             createOperationButtonsPanel(frame));
 
         optionButtonPan.add(
-            createButton("OPTIONS", frame, OPEN_OPTIONS.toString()));
+            buildOptionButtonsPanel(frame));
 
-        return buttPan;
+        return buttonPanel;
+    }
+
+    private Panel buildOptionButtonsPanel(App frame) {
+        Panel buttonPanel = createGridPanel(0, 1, 2, 2);
+        buttonPanel.setBackground(Color.WHITE);
+
+        AppGLCanvas canvas = getAppGLCanvas(frame);
+
+        buttonPanel.add(
+            createButton(
+                "LOAD IMAGE", canvas, LOAD_IMAGE.toString()));
+        buttonPanel.add(
+            createButton(
+                "OPTIONS", frame, OPEN_OPTIONS.toString()));
+
+        return buttonPanel;
+    }
+
+    private AppGLCanvas getAppGLCanvas(App frame) {
+        Container mainPanel =
+            (Container) frame.getComponent(0);
+
+        Container canvasPanel =
+            (Container) mainPanel.getComponent(0);
+
+        return
+            (AppGLCanvas) canvasPanel.getComponent(0);
     }
 
     private Panel createOperationButtonsPanel(App frame) {
