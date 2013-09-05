@@ -25,7 +25,7 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
         buildGUI();
     }
 
-    public void buildGUI() {
+    private void buildGUI() {
         new AppGUIBuilder().buildGUI(this);
     }
 
