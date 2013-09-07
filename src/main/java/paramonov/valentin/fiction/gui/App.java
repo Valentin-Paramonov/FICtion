@@ -2,6 +2,10 @@ package paramonov.valentin.fiction.gui;
 
 import paramonov.valentin.fiction.gui.action.Action;
 import paramonov.valentin.fiction.gui.builder.AppGUIBuilder;
+import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
+import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
+import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperatorFactory;
+import paramonov.valentin.fiction.gui.dialog.ImageFileDialog;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,25 +17,62 @@ public class App
 extends Frame
 implements ActionListener, WindowListener, ItemListener, TextListener {
     public static final long serialVersionUID = 0xfade;
-    public static String TITLE = "FICtion";
+    public static final String TITLE = "FICtion";
     public static int CANVAS_WIDTH = 768;
     public static int CANVAS_HEIGHT = 432;
+
+    private CanvasOperator canvasOperator;
+    private FileDialog openDialog;
+    private FileDialog saveDialog;
 
     public App() {
         super(TITLE);
 //        this.setResizable(false);
+        init();
+    }
+
+    private void init() {
         this.addWindowListener(this);
 
         buildGUI();
+
+        setupCanvasOperator();
+
+        attachDialogs();
     }
 
     private void buildGUI() {
         new AppGUIBuilder().buildGUI(this);
     }
 
+    private void setupCanvasOperator() {
+        canvasOperator =
+            CanvasOperatorFactory.createCanvasOperator(
+                getAppGLCanvas());
+    }
+
+    private void attachDialogs() {
+        openDialog =
+            new ImageFileDialog(this, "Open file", FileDialog.LOAD);
+        saveDialog =
+            new ImageFileDialog(this, "Save to...", FileDialog.SAVE);
+    }
+
+    private AppGLCanvas getAppGLCanvas() {
+        Container mainPanel =
+            (Container) getComponent(0);
+
+        Container canvasPanel =
+            (Container) mainPanel.getComponent(0);
+
+        return
+            (AppGLCanvas) canvasPanel.getComponent(0);
+    }
+
     public void start() {
 //        this.setPreferredSize(new Dimension(900,450));
         this.pack();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
@@ -142,7 +183,10 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 //                paus.setActionCommand("Pause");
 //
 //                break;
-
+            case LOAD_IMAGE:
+                loadImageToCanvas();
+                break;
+            
             case OPEN_OPTIONS:
                 switchToOptionPane();
                 break;
@@ -151,6 +195,18 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
                 switchFromOptionPane();
                 break;
         }
+    }
+
+    private void loadImageToCanvas() {
+        openDialog.setVisible(true);
+
+        String fileName = openDialog.getFile();
+
+        if(fileName == null) return;
+
+        canvasOperator.operate(
+            Action.LOAD_IMAGE,
+            openDialog.getDirectory() + fileName);
     }
 
     private void switchToOptionPane() {

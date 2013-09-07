@@ -4,12 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.Image;
 
+import java.io.File;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ImageProcessorTest {
     private ImageProcessor processor;
-    private static final String TEST_IMG = "src/test/resources/test image.png";
+    private static final String PATH = "src/test/resources/";
+    private static final String TEST_IMG = PATH + "test image.png";
 
     @Before
     public void setUp() {
@@ -42,7 +46,7 @@ public class ImageProcessorTest {
     @Test
     public void testLoadImageFromFile_ImageOrientation() throws Exception {
         Image img =
-                processor.loadImageFromFile(TEST_IMG);
+            processor.loadImageFromFile(TEST_IMG);
 
         int firstPixel = img.getARGB()[0];
 
@@ -67,5 +71,33 @@ public class ImageProcessorTest {
         int alphaPixel = img.getARGB()[24];
 
         assertThat(alphaPixel, equalTo(0x00000000));
+    }
+
+    @Test
+    public void testWriteImageToFile_NoExtension() throws Exception {
+        Image outImg =
+            processor.loadImageFromFile(TEST_IMG);
+
+        String outFilePath = PATH + "out image";
+
+        processor.writeImageToFile(outImg, outFilePath);
+
+        File writtenFile = new File(outFilePath + ".png");
+
+        assertTrue(writtenFile.exists());
+    }
+
+    @Test
+    public void testWriteImageToFile_WithExtension() throws Exception {
+        Image outImg =
+            processor.loadImageFromFile(TEST_IMG);
+
+        String outFilePath = PATH + "out image.png";
+
+        processor.writeImageToFile(outImg, outFilePath);
+
+        File writtenFile = new File(outFilePath);
+
+        assertTrue(writtenFile.exists());
     }
 }

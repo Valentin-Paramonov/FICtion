@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 class ImageProcessor {
@@ -16,38 +17,30 @@ class ImageProcessor {
         int w = buffImg.getWidth();
         int h = buffImg.getHeight();
 
-
         int[] colorArray = buffImg.getRGB(0, 0, w, h, null, 0, w);
 
         return new Image(colorArray, w, h);
+    }
 
-//        WritableRaster raster = Raster.createInterleavedRaster(
-//            DataBuffer.TYPE_BYTE, buffImg.getWidth(), buffImg.getHeight(), 4, null
-//        );
-//
-//        ComponentColorModel colormodel = new ComponentColorModel(
-//                ColorSpace.getInstance(ColorSpace.CS_sRGB),
-//                new int[] {8,8,8,8},
-//                true,
-//                false,
-//                ComponentColorModel.TRANSLUCENT,
-//                DataBuffer.TYPE_BYTE
-//        );
-//
-//        img = new BufferedImage(
-//                colormodel,
-//                raster,
-//                false,
-//                null
-//        );
-//
-//        Graphics2D graphics = img.createGraphics();
-//
-//        //graphics.drawImage(buffImg, null, null);
-//        graphics.drawImage(
-//                buffImg,
-//                new AffineTransform(new double[]{1,0,0,-1,0,h}),
-//                null);
+    public void writeImageToFile(Image img, String file)
+        throws IOException {
+
+        int w = img.getWidth();
+        int h = img.getHeight();
+        String pngFile =
+            file.endsWith(".png") ?
+            file : file + ".png";
+
+        BufferedImage buffImg =
+            new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
+        buffImg.setRGB(0, 0, w, h, img.getARGB(), 0, w);
+
+        try(FileOutputStream fos =
+            new FileOutputStream(pngFile)) {
+
+            ImageIO.write(buffImg, "png", fos);
+        }
     }
 
     private BufferedImage loadBufferedImage(String file) {
