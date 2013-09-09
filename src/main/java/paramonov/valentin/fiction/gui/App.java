@@ -3,8 +3,9 @@ package paramonov.valentin.fiction.gui;
 import paramonov.valentin.fiction.gui.action.Action;
 import paramonov.valentin.fiction.gui.builder.AppGUIBuilder;
 import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
-import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
-import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperatorFactory;
+import paramonov.valentin.fiction.gui.canvas.CanvasOperator;
+import paramonov.valentin.fiction.gui.canvas.CanvasOperatorFactory;
+import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationException;
 import paramonov.valentin.fiction.gui.dialog.ImageFileDialog;
 
 import java.awt.*;
@@ -204,9 +205,13 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 
         if(fileName == null) return;
 
-        canvasOperator.operate(
-            Action.LOAD_IMAGE,
-            openDialog.getDirectory() + fileName);
+        try {
+            canvasOperator.operate(
+                Action.LOAD_IMAGE,
+                openDialog.getDirectory() + fileName);
+        } catch (OperationException oe) {
+            oe.printStackTrace();
+        }
     }
 
     private void switchToOptionPane() {
@@ -309,7 +314,11 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 
     @Override
     public void windowDeiconified(WindowEvent windowEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            canvasOperator.operate(Action.UPDATE_GRAPHICS);
+        } catch (OperationException oe) {
+            System.out.println(oe.getMessage());
+        }
     }
 
     @Override

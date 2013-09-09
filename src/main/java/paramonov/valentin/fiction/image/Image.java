@@ -1,5 +1,7 @@
 package paramonov.valentin.fiction.image;
 
+import java.nio.IntBuffer;
+
 public class Image {
     private int[] argb;
     private int w;
@@ -21,5 +23,18 @@ public class Image {
 
     public int getHeight() {
         return h;
+    }
+
+    public double getAspect() {
+        return (double) w / (h != 0 ? h : 1);
+    }
+
+    public IntBuffer getBuffer() {
+        return IntBuffer.wrap(argb);
+//        IntBuffer buff = IntBuffer.wrap(argb);
+//
+////        buff.flip();
+//
+//        return buff;
     }
 }
