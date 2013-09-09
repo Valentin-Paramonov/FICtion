@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-class ImageProcessor {
+public class ImageProcessor {
+    ImageProcessor() {}
+
     public Image loadImageFromFile(String file)
         throws FileNotFoundException {
 
