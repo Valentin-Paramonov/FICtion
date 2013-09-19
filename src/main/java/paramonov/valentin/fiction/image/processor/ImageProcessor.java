@@ -59,4 +59,23 @@ public class ImageProcessor {
 
         return buffImg;
     }
+
+    public Image toGrayscale(Image img) {
+        int[] gray = img.getARGB();
+
+        for(int i = 0; i < gray.length; i++) {
+            int color = gray[i];
+
+            int r = (color >> 16) & 0xff;
+            int g = (color >> 8) & 0xff;
+            int b = color & 0xff;
+
+            int luma = (int) (.2126 * r + .7153 * g + .0721 * b);
+
+            gray[i] = (color & 0xff000000) | (luma << 16) | (luma << 8) | luma;
+        }
+
+        return new Image(
+            gray, img.getWidth(), img.getHeight());
+    }
 }
