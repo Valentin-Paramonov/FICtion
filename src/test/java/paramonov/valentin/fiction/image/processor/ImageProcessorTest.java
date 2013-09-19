@@ -12,8 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 public class ImageProcessorTest {
     private ImageProcessor processor;
-    private static final String PATH = "src/test/resources/";
-    private static final String TEST_IMG = PATH + "test image.png";
+    private static final String RESOURCE_PATH = "src/test/resources/";
+    private static final String TEST_IMG = RESOURCE_PATH + "test image.png";
 
     @Before
     public void setUp() {
@@ -78,7 +78,7 @@ public class ImageProcessorTest {
         Image outImg =
             processor.loadImageFromFile(TEST_IMG);
 
-        String outFilePath = PATH + "out image";
+        String outFilePath = RESOURCE_PATH + "out image";
 
         processor.writeImageToFile(outImg, outFilePath);
 
@@ -92,12 +92,22 @@ public class ImageProcessorTest {
         Image outImg =
             processor.loadImageFromFile(TEST_IMG);
 
-        String outFilePath = PATH + "out image.png";
+        String outFilePath = RESOURCE_PATH + "out image.png";
 
         processor.writeImageToFile(outImg, outFilePath);
 
         File writtenFile = new File(outFilePath);
 
         assertTrue(writtenFile.exists());
+    }
+
+    @Test
+    public void testToGrayscale_ProducesGrayscaleImage() throws Exception {
+        Image colorImage =
+            processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+
+        Image grayscaleImage = processor.toGrayscale(colorImage);
+
+        processor.writeImageToFile(grayscaleImage, RESOURCE_PATH + "grayscale.png");
     }
 }
