@@ -3,7 +3,7 @@ package paramonov.valentin.fiction.collections.hcbc;
 import paramonov.valentin.fiction.collections.QuadTree;
 
 public class HCBCTree extends QuadTree<HCBCBlock> {
-    HCBCTree(int width, int height) {
+    public HCBCTree(int width, int height) {
         this(new HCBCBlock(
             0, 0, width, height, 0, 0, 0));
     }
@@ -11,21 +11,6 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
     protected HCBCTree(HCBCBlock block) {
         element = block;
         children = new HCBCTree[4];
-    }
-
-    @Override
-    public int size() {
-        if(element == null) return 0;
-
-        int size = 1;
-
-        for(QuadTree qt : children) {
-            if(qt != null) {
-                size += qt.size();
-            }
-        }
-
-        return size;
     }
 
     @Override
@@ -85,17 +70,5 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
     protected boolean fits(int regionStart, int regionEnd, int coord) {
         return coord >= regionStart && coord < regionEnd;
-    }
-
-    protected boolean noChildren() {
-        for(Object o : getChildren()) {
-            if(o != null) return false;
-        }
-
-        return true;
-    }
-
-    protected Object[] getChildren() {
-        return children;
     }
 }
