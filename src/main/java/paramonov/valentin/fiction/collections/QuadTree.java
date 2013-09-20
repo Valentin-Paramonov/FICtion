@@ -10,5 +10,29 @@ public abstract class QuadTree<T> {
         return element;
     }
 
-    public abstract int size();
+    public int size() {
+        if(element == null) return 0;
+
+        int size = 1;
+
+        for(QuadTree qt : children) {
+            if(qt != null) {
+                size += qt.size();
+            }
+        }
+
+        return size;
+    }
+
+    protected boolean noChildren() {
+        for(Object o : getChildren()) {
+            if(o != null) return false;
+        }
+
+        return true;
+    }
+
+    protected QuadTree<T>[] getChildren() {
+        return children;
+    }
 }
