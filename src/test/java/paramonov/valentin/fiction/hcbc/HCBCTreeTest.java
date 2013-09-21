@@ -1,4 +1,4 @@
-package paramonov.valentin.fiction.collections.hcbc;
+package paramonov.valentin.fiction.hcbc;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -160,14 +160,16 @@ public class HCBCTreeTest {
     public void testSize_NewTree() {
         int size = evenTree.size();
 
-        Assert.assertThat(size, equalTo(1));
+        Assert.assertThat(size, equalTo(0));
     }
 
     @Test
     public void testSize_UpdatesOnAdd() {
-        HCBCBlock block = new HCBCBlock(0, 0, 3, 3, 0, 0 ,0);
+        HCBCBlock block1 = new HCBCBlock(0, 0, 3, 3, 0, 0 ,0);
+        HCBCBlock block2 = new HCBCBlock(3, 3, 3, 3, 0, 0 ,0);
 
-        evenTree.add(block);
+        evenTree.add(block1);
+        evenTree.add(block2);
 
         int size = evenTree.size();
 

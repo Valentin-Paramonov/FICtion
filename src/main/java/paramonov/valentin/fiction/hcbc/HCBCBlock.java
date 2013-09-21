@@ -1,4 +1,4 @@
-package paramonov.valentin.fiction.collections.hcbc;
+package paramonov.valentin.fiction.hcbc;
 
 public class HCBCBlock {
     private int x;

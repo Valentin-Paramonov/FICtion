@@ -52,9 +52,20 @@ public class ImageTest {
     }
 
     @Test
-    public void testGetAspect_ImageHasExpectedAspect() throws Exception {
+    public void testGetAspect_ImageHasExpectedAspect() {
         double aspect = img.getAspect();
 
         assertThat(aspect, equalTo(1.));
+    }
+
+    @Test
+    public void testGetARGB_ImageCanBeAltered() {
+        int[] color = img.getARGB();
+
+        color[0] = 0xff00ff;
+
+        int pixel = img.getARGB()[0];
+
+        assertThat(pixel, equalTo(0xff00ff));
     }
 }
