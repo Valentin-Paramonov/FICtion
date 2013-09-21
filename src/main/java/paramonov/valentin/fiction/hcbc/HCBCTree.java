@@ -1,4 +1,4 @@
-package paramonov.valentin.fiction.collections.hcbc;
+package paramonov.valentin.fiction.hcbc;
 
 import paramonov.valentin.fiction.collections.QuadTree;
 
@@ -15,7 +15,6 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
     @Override
     public boolean add(HCBCBlock block) {
-
         if(element == null) {
             element = block;
             return true;
@@ -27,6 +26,7 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
         if(children[index] == null) {
             children[index] = new HCBCTree(block);
+            size++;
             return true;
         }
 
