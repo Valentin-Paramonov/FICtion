@@ -3,50 +3,52 @@ package paramonov.valentin.fiction.hcbc;
 import paramonov.valentin.fiction.collections.QuadTree;
 
 public class HCBCTree extends QuadTree<HCBCBlock> {
-    public HCBCTree(int width, int height) {
-        this(new HCBCBlock(
-            0, 0, width, height, 0, 0, 0));
-    }
+    public HCBCTree() {}
 
     protected HCBCTree(HCBCBlock block) {
         element = block;
-        children = new HCBCTree[4];
     }
 
     @Override
     public boolean add(HCBCBlock block) {
-        if(element == null) {
-            element = block;
-            return true;
+        synchronized(this) {
+            if(element == null) {
+                element = block;
+                return true;
+            }
+
+            if(children == null) {
+                children = new HCBCTree[4];
+            }
+
+            int index = findPlace(block);
+
+            if (index == -1) return false;
+
+            if (children[index] == null) {
+                children[index] = new HCBCTree(block);
+                size++;
+                return true;
+            }
+
+            return children[index].add(block);
         }
-
-        int index = findPlace(block);
-
-        if(index == -1) return false;
-
-        if(children[index] == null) {
-            children[index] = new HCBCTree(block);
-            size++;
-            return true;
-        }
-
-        return children[index].add(block);
     }
 
     protected int findPlace(HCBCBlock block) {
-        int hQuad = quad(
+        int horizontalQuad = quad(
             element.getX(), element.getWidth(),
             block.getX(), block.getWidth());
 
-        if(hQuad < 0) return -1;
+        if(horizontalQuad < 0) return -1;
 
-        int vQuad = quad(
+        int verticalQuad = quad(
             element.getY(), element.getHeight(),
             block.getY(), block.getHeight());
 
-        if(vQuad < 0) return -1;
+        if(verticalQuad < 0) return -1;
 
-        return hQuad + 2*vQuad;
+        return horizontalQuad + 2*verticalQuad;
     }
 
     protected int quad(
@@ -57,10 +59,10 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
         int regionMid = regionStart + halfSize;
         int regionEnd = regionStart + regionSize;
 
-        if (fits(regionStart, regionMid, blockStart)) {
+        if (belongs(regionStart, regionMid, blockStart)) {
             if (blockSize > halfSize) return -1;
             return 0;
-        } else if (fits(regionMid, regionEnd, blockStart)) {
+        } else if (belongs(regionMid, regionEnd, blockStart)) {
             if (blockSize > regionSize / 2) return -1;
             return 1;
         }
@@ -68,7 +70,7 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
         return -1;
     }
 
-    protected boolean fits(int regionStart, int regionEnd, int coord) {
+    protected boolean belongs(int regionStart, int regionEnd, int coord) {
         return coord >= regionStart && coord < regionEnd;
     }
 }

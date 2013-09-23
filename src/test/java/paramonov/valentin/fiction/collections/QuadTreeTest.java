@@ -16,10 +16,10 @@ public class QuadTreeTest {
     private QuadTree[] children = new QuadTree[4];
 
     @Spy
-    private QuadTree tree = new HCBCTree(0,0);
+    private QuadTree tree = new HCBCTree();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         doReturn(children).when(tree).getChildren();
     }
 

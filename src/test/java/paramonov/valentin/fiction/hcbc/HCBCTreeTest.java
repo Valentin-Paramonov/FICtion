@@ -1,6 +1,7 @@
 package paramonov.valentin.fiction.hcbc;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -9,40 +10,46 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HCBCTreeTest {
-    private HCBCTree oddTree = new HCBCTree(5, 5);
-    private HCBCTree evenTree = new HCBCTree(6, 6);
+    private HCBCTree oddTree = new HCBCTree();
+    private HCBCTree evenTree = new HCBCTree();
+
+    @Before
+    public void setUp() {
+        oddTree.add(new HCBCBlock(0, 0, 5, 5, 0, 0, 0));
+        evenTree.add(new HCBCBlock(0, 0, 6, 6, 0, 0, 0));
+    }
 
     @Test
-    public void testFits_Belongs() {
-        boolean belongs = oddTree.fits(1, 5, 2);
+    public void testBelongs_Belongs() {
+        boolean belongs = oddTree.belongs(1, 5, 2);
 
         assertTrue(belongs);
     }
 
     @Test
-    public void testFits_LeftFromRegion() {
-        boolean belongs = oddTree.fits(1, 5, 0);
+    public void testBelongs_LeftFromRegion() {
+        boolean belongs = oddTree.belongs(1, 5, 0);
 
         assertFalse(belongs);
     }
 
     @Test
-    public void testFits_RightFromRegion() {
-        boolean belongs = oddTree.fits(1, 5, 7);
+    public void testBelongs_RightFromRegion() {
+        boolean belongs = oddTree.belongs(1, 5, 7);
 
         assertFalse(belongs);
     }
 
     @Test
-    public void testFits_LeftBoundary() {
-        boolean belongs = oddTree.fits(1, 5, 1);
+    public void testBelongs_LeftBoundary() {
+        boolean belongs = oddTree.belongs(1, 5, 1);
 
         assertTrue(belongs);
     }
 
     @Test
-    public void testFits_RightBoundary() {
-        boolean belongs = oddTree.fits(1, 5, 5);
+    public void testBelongs_RightBoundary() {
+        boolean belongs = oddTree.belongs(1, 5, 5);
 
         assertFalse(belongs);
     }

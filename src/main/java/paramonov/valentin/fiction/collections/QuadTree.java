@@ -8,6 +8,8 @@ public abstract class QuadTree<T> {
     public abstract boolean add(T t);
 
     protected boolean noChildren() {
+        if(getChildren() == null) return true;
+
         for(Object o : getChildren()) {
             if(o != null) return false;
         }
