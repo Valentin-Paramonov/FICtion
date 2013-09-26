@@ -67,7 +67,7 @@ public class HCBCModule {
         ForkJoinPool pool = new ForkJoinPool();
         HCBCPartition partitionTask =
             new HCBCPartition(
-                tree, tc, tolerance, maxLevel, 0, 0, w, h);
+                tree, tc, tolerance, maxLevel, 0, 0, 0, w, h);
 
         pool.invoke(partitionTask);
 

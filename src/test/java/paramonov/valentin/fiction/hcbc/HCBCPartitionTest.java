@@ -15,7 +15,7 @@ public class HCBCPartitionTest {
     public void testCalculateMeanTC_ProducesExpectedValues_WholeBlockStartAtZero() {
         partition =
             new HCBCPartition(
-                null, tc, 0, 0, 0, 0, 2, 2);
+                null, tc, 0, 0, 0, 0, 0, 2, 2);
 
         double[] meanValues = partition.calculateMeanTC();
 
@@ -28,12 +28,40 @@ public class HCBCPartitionTest {
     public void testCalculateMeanTC_ProducesExpectedValues_SubBlockShifted() {
         partition =
             new HCBCPartition(
-                null, tc, 0, 0, 1, 1, 1, 1);
+                null, tc, 0, 0, 0, 1, 1, 1, 1);
 
         double[] meanValues = partition.calculateMeanTC();
 
         double meanTCB = meanValues[1];
 
         assertThat(meanTCB, equalTo(8.));
+    }
+
+    @Test
+    public void testCalculateVariance_ProducesExpectedValues_WholeBlockStartAtZero() {
+        partition =
+            new HCBCPartition(
+                null, tc, 0, 0, 0, 0, 0, 2, 2);
+
+        double[] meanValues = partition.calculateMeanTC();
+        double[] variance = partition.calculateVariance(meanValues);
+
+        double varB = variance[1];
+
+        assertThat(varB, equalTo(9.1875));
+    }
+
+    @Test
+    public void testCalculateVariance_ProducesExpectedValues_SubBlockShifted() {
+        partition =
+            new HCBCPartition(
+                null, tc, 0, 0, 0, 1, 1, 1, 1);
+
+        double[] meanValues = partition.calculateMeanTC();
+        double[] variance = partition.calculateVariance(meanValues);
+
+        double varB = variance[1];
+
+        assertThat(varB, equalTo(0.));
     }
 }

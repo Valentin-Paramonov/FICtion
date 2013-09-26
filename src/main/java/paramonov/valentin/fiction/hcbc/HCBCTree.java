@@ -11,28 +11,26 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
     @Override
     public boolean add(HCBCBlock block) {
-        synchronized(this) {
-            if(element == null) {
-                element = block;
-                return true;
-            }
-
-            if(children == null) {
-                children = new HCBCTree[4];
-            }
-
-            int index = findPlace(block);
-
-            if (index == -1) return false;
-
-            if (children[index] == null) {
-                children[index] = new HCBCTree(block);
-                size++;
-                return true;
-            }
-
-            return children[index].add(block);
+        if(element == null) {
+            element = block;
+            return true;
         }
+
+        if(children == null) {
+            children = new HCBCTree[4];
+        }
+
+        int index = findPlace(block);
+
+        if(index == -1) return false;
+
+        if(children[index] == null) {
+            children[index] = new HCBCTree(block);
+            size++;
+            return true;
+        }
+
+        return children[index].add(block);
     }
 
     protected int findPlace(HCBCBlock block) {

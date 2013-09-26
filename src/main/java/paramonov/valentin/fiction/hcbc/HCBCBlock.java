@@ -5,13 +5,13 @@ public class HCBCBlock {
     private int y;
     private int width;
     private int height;
-    private int mtcR;
-    private int mtcG;
-    private int mtcB;
+    private double mtcR;
+    private double mtcG;
+    private double mtcB;
 
     public HCBCBlock(
         int x, int y, int width, int height,
-        int mtcR, int mtcG, int mtcB) {
+        double mtcR, double mtcG, double mtcB) {
 
         this.x = x;
         this.y = y;
@@ -38,15 +38,15 @@ public class HCBCBlock {
         return height;
     }
 
-    public int getMtcR() {
+    public double getMtcR() {
         return mtcR;
     }
 
-    public int getMtcG() {
+    public double getMtcG() {
         return mtcG;
     }
 
-    public int getMtcB() {
+    public double getMtcB() {
         return mtcB;
     }
 }
