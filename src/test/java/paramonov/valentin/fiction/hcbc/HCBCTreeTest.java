@@ -137,7 +137,7 @@ public class HCBCTreeTest {
 
     @Test
     public void testAdd_AddsValidBlock() {
-        HCBCBlock block = new HCBCBlock(0, 0, 3, 3, 0, 0 ,0);
+        HCBCBlock block = new HCBCBlock(0, 0, 3, 3, 0, 0, 0);
 
         boolean added = evenTree.add(block);
 
@@ -146,7 +146,7 @@ public class HCBCTreeTest {
 
     @Test
     public void testAdd_DoesNotAddInvalidBlock() {
-        HCBCBlock block = new HCBCBlock(0, 0, 7, 7, 0, 0 ,0);
+        HCBCBlock block = new HCBCBlock(0, 0, 7, 7, 0, 0, 0);
 
         boolean added = evenTree.add(block);
 
@@ -155,7 +155,7 @@ public class HCBCTreeTest {
 
     @Test
     public void testAdd_DoesNotAddSameBlockTwice() {
-        HCBCBlock block = new HCBCBlock(0, 0, 3, 3, 0, 0 ,0);
+        HCBCBlock block = new HCBCBlock(0, 0, 3, 3, 0, 0, 0);
 
         evenTree.add(block);
         boolean added = evenTree.add(block);
@@ -165,15 +165,17 @@ public class HCBCTreeTest {
 
     @Test
     public void testSize_NewTree() {
-        int size = evenTree.size();
+        HCBCTree tree = new HCBCTree();
+
+        int size = tree.size();
 
         Assert.assertThat(size, equalTo(0));
     }
 
     @Test
     public void testSize_UpdatesOnAdd() {
-        HCBCBlock block1 = new HCBCBlock(0, 0, 3, 3, 0, 0 ,0);
-        HCBCBlock block2 = new HCBCBlock(3, 3, 3, 3, 0, 0 ,0);
+        HCBCBlock block1 = new HCBCBlock(0, 0, 3, 3, 0, 0, 0);
+        HCBCBlock block2 = new HCBCBlock(3, 3, 3, 3, 0, 0, 0);
 
         evenTree.add(block1);
         evenTree.add(block2);
@@ -181,5 +183,20 @@ public class HCBCTreeTest {
         int size = evenTree.size();
 
         Assert.assertThat(size, equalTo(2));
+    }
+
+    @Test
+    public void testSize_Expected() {
+        HCBCTree tree = new HCBCTree();
+
+        tree.add(new HCBCBlock(0, 0, 2, 2, 0, 0, 0));
+        tree.add(new HCBCBlock(0, 0, 1, 1, 1, 1, 1));
+        tree.add(new HCBCBlock(1, 0, 1, 1, 2, 2, 2));
+        tree.add(new HCBCBlock(0, 1, 1, 1, 3, 3, 3));
+        tree.add(new HCBCBlock(1, 1, 1, 1, 4, 4, 4));
+
+        int treeSize = tree.size();
+
+        Assert.assertThat(treeSize, equalTo(4));
     }
 }

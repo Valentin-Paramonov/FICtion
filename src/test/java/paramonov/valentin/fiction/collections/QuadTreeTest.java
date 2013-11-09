@@ -7,8 +7,8 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import paramonov.valentin.fiction.hcbc.HCBCTree;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -16,7 +16,7 @@ public class QuadTreeTest {
     private QuadTree[] children = new QuadTree[4];
 
     @Spy
-    private QuadTree tree = new HCBCTree();
+    private QuadTree tree = (QuadTree) new HCBCTree();
 
     @Before
     public void setUp() {
@@ -24,18 +24,18 @@ public class QuadTreeTest {
     }
 
     @Test
-    public void testNoChildren_EmptyArray() {
-        boolean noChildren = tree.noChildren();
+    public void testHasChildren_EmptyArray() {
+        boolean hasChildren = tree.hasChildren();
 
-        assertThat(noChildren, equalTo(true));
+        assertFalse(hasChildren);
     }
 
     @Test
     public void testNoChildren_NonEmptyArray() {
         children[0] = tree;
 
-        boolean noChildren = tree.noChildren();
+        boolean hasChildren = tree.hasChildren();
 
-        assertThat(noChildren, equalTo(false));
+        assertTrue(hasChildren);
     }
 }

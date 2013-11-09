@@ -7,14 +7,18 @@ public abstract class QuadTree<T> {
 
     public abstract boolean add(T t);
 
-    protected boolean noChildren() {
-        if(getChildren() == null) return true;
+    protected T getElement() {
+        return element;
+    }
+
+    protected boolean hasChildren() {
+        if(getChildren() == null) return false;
 
         for(Object o : getChildren()) {
-            if(o != null) return false;
+            if(o != null) return true;
         }
 
-        return true;
+        return false;
     }
 
     protected QuadTree<T>[] getChildren() {

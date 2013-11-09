@@ -2,7 +2,9 @@ package paramonov.valentin.fiction.hcbc;
 
 import paramonov.valentin.fiction.collections.QuadTree;
 
-public class HCBCTree extends QuadTree<HCBCBlock> {
+import java.util.Iterator;
+
+public class HCBCTree extends QuadTree<HCBCBlock> implements Iterable<HCBCBlock> {
     public HCBCTree() {}
 
     protected HCBCTree(HCBCBlock block) {
@@ -13,24 +15,26 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
     public boolean add(HCBCBlock block) {
         if(element == null) {
             element = block;
-            return true;
-        }
-
-        if(children == null) {
-            children = new HCBCTree[4];
-        }
-
-        int index = findPlace(block);
-
-        if(index == -1) return false;
-
-        if(children[index] == null) {
-            children[index] = new HCBCTree(block);
             size++;
             return true;
         }
 
-        return children[index].add(block);
+        int placeForChild = findPlace(block);
+
+        if(placeForChild == -1) return false;
+
+        if(children == null) {
+            size--;
+            children = new HCBCTree[4];
+        }
+
+        if(children[placeForChild] == null) {
+            children[placeForChild] = new HCBCTree(block);
+            size++;
+            return true;
+        }
+
+        return children[placeForChild].add(block);
     }
 
     protected int findPlace(HCBCBlock block) {
@@ -46,7 +50,7 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
         if(verticalQuad < 0) return -1;
 
-        return horizontalQuad + 2*verticalQuad;
+        return horizontalQuad + 2 * verticalQuad;
     }
 
     protected int quad(
@@ -57,11 +61,11 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
         int regionMid = regionStart + halfSize;
         int regionEnd = regionStart + regionSize;
 
-        if (belongs(regionStart, regionMid, blockStart)) {
-            if (blockSize > halfSize) return -1;
+        if(belongs(regionStart, regionMid, blockStart)) {
+            if(blockSize > halfSize) return -1;
             return 0;
-        } else if (belongs(regionMid, regionEnd, blockStart)) {
-            if (blockSize > regionSize / 2) return -1;
+        } else if(belongs(regionMid, regionEnd, blockStart)) {
+            if(blockSize > regionSize / 2) return -1;
             return 1;
         }
 
@@ -70,5 +74,25 @@ public class HCBCTree extends QuadTree<HCBCBlock> {
 
     protected boolean belongs(int regionStart, int regionEnd, int coord) {
         return coord >= regionStart && coord < regionEnd;
+    }
+
+    @Override
+    public Iterator<HCBCBlock> iterator() {
+        return new HCBCIterator(this);
+    }
+
+    @Override
+    public boolean hasChildren() {
+        return super.hasChildren();
+    }
+
+    @Override
+    protected HCBCBlock getElement() {
+        return super.getElement();
+    }
+
+    @Override
+    protected QuadTree<HCBCBlock>[] getChildren() {
+        return super.getChildren();
     }
 }
