@@ -5,7 +5,6 @@ import paramonov.valentin.fiction.image.Image;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -13,9 +12,10 @@ public class ImageProcessor {
     ImageProcessor() {}
 
     public Image loadImageFromFile(String file)
-        throws FileNotFoundException {
+        throws IOException {
 
         BufferedImage buffImg = loadBufferedImage(file);
+
         int w = buffImg.getWidth();
         int h = buffImg.getHeight();
 
@@ -31,7 +31,7 @@ public class ImageProcessor {
         int h = img.getHeight();
         String pngFile =
             file.endsWith(".png") ?
-            file : file + ".png";
+                file : file + ".png";
 
         BufferedImage buffImg =
             new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -39,25 +39,16 @@ public class ImageProcessor {
         buffImg.setRGB(0, 0, w, h, img.getARGB(), 0, w);
 
         try(FileOutputStream fos =
-            new FileOutputStream(pngFile)) {
+                new FileOutputStream(pngFile)) {
 
             ImageIO.write(buffImg, "png", fos);
         }
     }
 
-    private BufferedImage loadBufferedImage(String file) {
-        BufferedImage buffImg = null;
-
-        try(FileInputStream fis =
-            new FileInputStream(file)) {
-
-            buffImg = ImageIO.read(fis);
-
-        } catch(IOException ioe) {
-            ioe.printStackTrace();
+    private BufferedImage loadBufferedImage(String file) throws IOException {
+        try(FileInputStream fis = new FileInputStream(file)) {
+            return ImageIO.read(fis);
         }
-
-        return buffImg;
     }
 
     public Image toGrayscale(Image img) {

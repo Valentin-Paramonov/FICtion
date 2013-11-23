@@ -3,7 +3,7 @@ package paramonov.valentin.fiction.hcbc;
 import java.util.concurrent.RecursiveAction;
 
 class HCBCPartition extends RecursiveAction {
-    private HCBCTree tree;
+    private final HCBCTree tree;
     private double[][][] tc;
     private double tolerance;
     private int maxLevel, currentLevel, startX, startY, w, h;
@@ -30,19 +30,13 @@ class HCBCPartition extends RecursiveAction {
         double[] variance = calculateVariance(meanTC);
 
         synchronized(tree) {
-            tree.add(new HCBCBlock(
-                startX, startY, w, h, meanTC[0], meanTC[1], meanTC[2]));
+            tree.add(new HCBCBlock(startX, startY, w, h, meanTC[0], meanTC[1], meanTC[2]));
         }
 
         currentLevel++;
         if(currentLevel == maxLevel) return;
 
-        if(variance[0] <= tolerance &&
-            variance[1] <= tolerance &&
-            variance[2] <= tolerance) {
-
-            return;
-        }
+        if(variance[0] <= tolerance && variance[1] <= tolerance && variance[2] <= tolerance) return;
 
         int block1W = (w + 1) / 2;
         int block1H = (h + 1) / 2;

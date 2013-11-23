@@ -11,21 +11,29 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HCBCIteratorTest {
-    private HCBCTree tree;
+    private HCBCTree squareTree;
+    private HCBCTree rectTree;
 
     @Before
     public void setUp() throws Exception {
-        tree = new HCBCTree();
-        tree.add(new HCBCBlock(0, 0, 2, 2, 0, 0, 0));
-        tree.add(new HCBCBlock(0, 0, 1, 1, 1, 1, 1));
-        tree.add(new HCBCBlock(1, 0, 1, 1, 2, 2, 2));
-        tree.add(new HCBCBlock(0, 1, 1, 1, 3, 3, 3));
-        tree.add(new HCBCBlock(1, 1, 1, 1, 4, 4, 4));
+        squareTree = new HCBCTree();
+        squareTree.add(new HCBCBlock(0, 0, 2, 2, 0, 0, 0));
+        squareTree.add(new HCBCBlock(0, 0, 1, 1, 1, 1, 1));
+        squareTree.add(new HCBCBlock(1, 0, 1, 1, 2, 2, 2));
+        squareTree.add(new HCBCBlock(0, 1, 1, 1, 3, 3, 3));
+        squareTree.add(new HCBCBlock(1, 1, 1, 1, 4, 4, 4));
+
+        rectTree = new HCBCTree();
+        rectTree.add(new HCBCBlock(0, 0, 3, 3, 0, 0, 0));
+        rectTree.add(new HCBCBlock(0, 0, 2, 2, 1, 1, 1));
+        rectTree.add(new HCBCBlock(2, 0, 1, 2, 2, 2, 2));
+        rectTree.add(new HCBCBlock(0, 2, 2, 1, 3, 3, 3));
+        rectTree.add(new HCBCBlock(2, 2, 1, 1, 4, 4, 4));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemove() {
-        Iterator<HCBCBlock> iterator = tree.iterator();
+        Iterator<HCBCBlock> iterator = squareTree.iterator();
 
         iterator.remove();
     }
@@ -42,7 +50,7 @@ public class HCBCIteratorTest {
 
     @Test
     public void testHasNext_NonEmptyTree() {
-        Iterator<HCBCBlock> iterator = tree.iterator();
+        Iterator<HCBCBlock> iterator = squareTree.iterator();
 
         boolean hasNext = iterator.hasNext();
 
@@ -50,10 +58,24 @@ public class HCBCIteratorTest {
     }
 
     @Test
-    public void testNext_SequenceInRightOrder() {
+    public void testNext_SequenceInRightOrder_SquareTree() {
         double value = 1;
 
-        for(HCBCBlock block : tree) {
+        assertThat(squareTree.size(), equalTo(4));
+
+        for(HCBCBlock block : squareTree) {
+            assertThat(block.getMtcR(), equalTo(value));
+            value++;
+        }
+    }
+
+    @Test
+    public void testNext_SequenceInRightOrder_RectTree() {
+        double value = 1;
+
+        assertThat(rectTree.size(), equalTo(4));
+
+        for(HCBCBlock block : rectTree) {
             assertThat(block.getMtcR(), equalTo(value));
             value++;
         }

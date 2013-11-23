@@ -1,13 +1,13 @@
-package paramonov.valentin.fiction.gui.builder;
+package paramonov.valentin.fiction.gui;
 
-import paramonov.valentin.fiction.gui.App;
+import paramonov.valentin.fiction.gui.builder.GUIBuilder;
 import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
 
 import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static paramonov.valentin.fiction.gui.action.Action.*;
 import static paramonov.valentin.fiction.gui.builder.Component.*;
 
 public class AppGUIBuilder implements GUIBuilder<App> {
@@ -38,11 +38,18 @@ public class AppGUIBuilder implements GUIBuilder<App> {
         buildOptionPanel(app);
     }
 
-    private void buildOptionPanel(App app) {
+    private void buildOptionPanel(final App app) {
         Panel optionPanel = createGridPanel(3, 2, 10, 10);
 
-        optionPanel.add(
-            createButton("CLOSE", app, CLOSE_OPTIONS.toString()));
+        final Button closeOptions = createButton("CLOSE");
+        closeOptions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.closeOptionPane();
+            }
+        });
+
+        optionPanel.add(closeOptions);
 
         app.add(optionPanel, OPTION_PANEL.toString());
     }
@@ -53,26 +60,18 @@ public class AppGUIBuilder implements GUIBuilder<App> {
 
         app.add(mainPanel, MAIN_PANEL.toString());
 
-        mainPanel.add(
-            buildCanvasPanel());
+        mainPanel.add(buildCanvasPanel());
 
-        mainPanel.add(
-            buildButtonPanel(app));
+        mainPanel.add(buildButtonPanel(app));
     }
 
     private Panel buildCanvasPanel() {
         Panel canvasPanel = createFlowPanel();
         GLCanvas canvas = new AppGLCanvas();
 
-        canvas.setSize(
-            new Dimension(
-                App.CANVAS_WIDTH,
-                App.CANVAS_HEIGHT));
+        canvas.setSize(new Dimension(App.CANVAS_WIDTH, App.CANVAS_HEIGHT));
 
-        canvasPanel.add(
-            canvas,
-            CANVAS.toString(),
-            0);
+        canvasPanel.add(canvas, CANVAS.toString(), 0);
 
         return canvasPanel;
     }
@@ -93,47 +92,77 @@ public class AppGUIBuilder implements GUIBuilder<App> {
 
         buttonPanel.add(centralPanel);
 
-        operationButtonPan.add(
-            createOperationButtonsPanel(app));
+        operationButtonPan.add(createOperationButtonsPanel(app));
 
-        optionButtonPan.add(
-            buildOptionButtonsPanel(app));
+        optionButtonPan.add(buildOptionButtonsPanel(app));
 
         return buttonPanel;
     }
 
-    private Panel buildOptionButtonsPanel(App app) {
+    private Panel buildOptionButtonsPanel(final App app) {
         Panel buttonPanel = createGridPanel(0, 1, 2, 2);
         buttonPanel.setBackground(Color.WHITE);
 
-        buttonPanel.add(
-            createButton(
-                "LOAD IMAGE", app, LOAD_IMAGE.toString()));
-        buttonPanel.add(
-            createButton(
-                "OPTIONS", app, OPEN_OPTIONS.toString()));
+        final Button loadImage = createButton("LOAD IMAGE");
+        loadImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.loadImageToCanvas();
+            }
+        });
+
+        final Button openOptions = createButton("OPTIONS");
+        openOptions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.openOptionPane();
+            }
+        });
+
+        buttonPanel.add(loadImage);
+        buttonPanel.add(openOptions);
 
         return buttonPanel;
     }
 
-    private Panel createOperationButtonsPanel(App app) {
+    private Panel createOperationButtonsPanel(final App app) {
         Panel buttons = createGridPanel(0, 1, 2, 2);
         buttons.setBackground(Color.WHITE);
 
-        buttons.add(createButton("START", app, "START"));
-        buttons.add(createButton("PAUSE", app, "PAUSE"));
-        buttons.add(createButton("STOP", app, "STOP"));
+        final Button start = createButton("START");
+        final Button pause = createButton("PAUSE");
+        final Button stop = createButton("STOP");
+
+        start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.start();
+            }
+        });
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.pause();
+            }
+        });
+        stop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                app.stop();
+            }
+        });
+
+        buttons.add(start);
+        buttons.add(pause);
+        buttons.add(stop);
 
         return buttons;
     }
 
     @Override
-    public Button createButton(
-        String tag, ActionListener listener, String actionCommand) {
+    public Button createButton(String tag) {
 
         Button butt = new Button(tag);
-        butt.addActionListener(listener);
-        butt.setActionCommand(actionCommand);
 
         butt.setBackground(Color.DARK_GRAY);
         butt.setForeground(Color.WHITE);

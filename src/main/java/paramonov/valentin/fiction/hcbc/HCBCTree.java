@@ -95,4 +95,12 @@ public class HCBCTree extends QuadTree<HCBCBlock> implements Iterable<HCBCBlock>
     protected QuadTree<HCBCBlock>[] getChildren() {
         return super.getChildren();
     }
+
+    public int getBlockWidth() {
+        return element.getWidth();
+    }
+
+    public int getBlockHeight() {
+        return element.getHeight();
+    }
 }

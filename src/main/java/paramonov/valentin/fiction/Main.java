@@ -10,7 +10,7 @@ public class Main {
         final Runnable runApp = new Runnable() {
             @Override
             public void run() {
-                app.start();
+                app.launch();
             }
         };
 
@@ -18,7 +18,7 @@ public class Main {
             "You're running " +
                 System.getProperty("os.name") +
                 " (" +
-                    System.getProperty("os.arch") +
+                System.getProperty("os.arch") +
                 ")");
 
         EventQueue.invokeLater(runApp);

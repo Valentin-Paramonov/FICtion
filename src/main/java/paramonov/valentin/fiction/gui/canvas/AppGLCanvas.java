@@ -40,11 +40,15 @@ public class AppGLCanvas
 
         gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         gl.glEnable(GL_BLEND);
+
+        clear(gl);
     }
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        GL2 gl = glAutoDrawable.getGL().getGL2();
+
+        clear(gl);
     }
 
     @Override
@@ -59,17 +63,19 @@ public class AppGLCanvas
             case CANVAS_REPAINT:
                 drawImage(gl, currentTexture);
                 break;
+
+            case CANVAS_CLEAR:
+                clear(gl);
+                break;
         }
 
         action = CANVAS_NO_ACTION;
     }
 
     @Override
-    public void reshape(
-        GLAutoDrawable glAutoDrawable,
-        int x, int y, int wdrw, int hdrw) {
-
+    public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int wdrw, int hdrw) {
         GL2 gl = glAutoDrawable.getGL().getGL2();
+        clear(gl);
     }
 
     private double aspect() {
@@ -162,8 +168,7 @@ public class AppGLCanvas
         gl.glMatrixMode(GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        gl.glClearColor(0,0,0,0);
-        gl.glClear(GL_COLOR_BUFFER_BIT);
+        clear(gl);
 
         scaleImage(gl, img);
 
@@ -181,17 +186,14 @@ public class AppGLCanvas
             gl.glTranslatef(0, (float) imgHeight / 2, 0);
             gl.glScaled(1, canvasAspect / imgAspect, 1);
             gl.glTranslatef(0, (float) -imgHeight / 2, 0);
-        }
-        else {
-            gl.glTranslatef((float) imgWidth / 2, 0,  0);
+        } else {
+            gl.glTranslatef((float) imgWidth / 2, 0, 0);
             gl.glScaled(imgAspect / canvasAspect, 1, 1);
             gl.glTranslatef((float) -imgWidth / 2, 0, 0);
         }
     }
 
-    private void drawImage(
-        GL2 gl, int texId) {
-
+    private void drawImage(GL2 gl, int texId) {
         gl.glBindTexture(GL_TEXTURE_2D, texId);
 
         IntBuffer params = IntBuffer.wrap(new int[2]);
@@ -207,6 +209,7 @@ public class AppGLCanvas
         int texWidth = params.get(0);
         int texHeight = params.get(1);
 
+        clear(gl);
         gl.glBegin(GL_QUADS);
 
 //        gl.glTexCoord2d(0, 1);
@@ -233,5 +236,12 @@ public class AppGLCanvas
 
     public boolean isReady() {
         return ready;
+    }
+
+    protected void clear(GL2 gl) {
+        gl.glDisable(GL_BLEND);
+        gl.glClearColor(0, 0, 0, 1);
+        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        gl.glEnable(GL_BLEND);
     }
 }

@@ -1,10 +1,8 @@
 package paramonov.valentin.fiction.gui;
 
-import paramonov.valentin.fiction.gui.action.Action;
-import paramonov.valentin.fiction.gui.builder.AppGUIBuilder;
 import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
-import paramonov.valentin.fiction.gui.canvas.CanvasOperator;
 import paramonov.valentin.fiction.gui.canvas.CanvasOperatorFactory;
+import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
 import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationException;
 import paramonov.valentin.fiction.gui.dialog.ImageFileDialog;
 
@@ -14,10 +12,8 @@ import java.awt.event.*;
 import static paramonov.valentin.fiction.gui.builder.Component.MAIN_PANEL;
 import static paramonov.valentin.fiction.gui.builder.Component.OPTION_PANEL;
 
-public class App
-extends Frame
-implements ActionListener, WindowListener, ItemListener, TextListener {
-    public static final long serialVersionUID = 0xfade;
+public class App extends Frame implements WindowListener, ItemListener, TextListener {
+    public static final long serialVersionUID = 0xFADE;
     public static final String TITLE = "FICtion";
     public static int CANVAS_WIDTH = 768;
     public static int CANVAS_HEIGHT = 432;
@@ -28,18 +24,21 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 
     public App() {
         super(TITLE);
-//        this.setResizable(false);
         init();
     }
 
-    private void init() {
+    protected void init() {
         this.addWindowListener(this);
-
         buildGUI();
-
         setupCanvasOperator();
-
         attachDialogs();
+    }
+
+    public void launch() {
+        this.pack();
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        this.setVisible(true);
     }
 
     private void buildGUI() {
@@ -47,48 +46,24 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
     }
 
     private void setupCanvasOperator() {
-        canvasOperator =
-            CanvasOperatorFactory.createCanvasOperator(
-                getAppGLCanvas());
+        canvasOperator = CanvasOperatorFactory.createCanvasOperator(getAppGLCanvas());
     }
 
     private void attachDialogs() {
-        openDialog =
-            new ImageFileDialog(this, "Open file", FileDialog.LOAD);
-        saveDialog =
-            new ImageFileDialog(this, "Save to...", FileDialog.SAVE);
+        openDialog = new ImageFileDialog(this, "Open file", FileDialog.LOAD);
+        saveDialog = new ImageFileDialog(this, "Save to...", FileDialog.SAVE);
     }
 
     private AppGLCanvas getAppGLCanvas() {
-        Container mainPanel =
-            (Container) getComponent(0);
+        Container mainPanel = (Container) getComponent(0);
+        Container canvasPanel = (Container) mainPanel.getComponent(0);
 
-        Container canvasPanel =
-            (Container) mainPanel.getComponent(0);
-
-        return
-            (AppGLCanvas) canvasPanel.getComponent(0);
+        return (AppGLCanvas) canvasPanel.getComponent(0);
     }
 
-    public void start() {
-//        this.setPreferredSize(new Dimension(900,450));
-        this.pack();
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-    }
-
-    public void actionPerformed(ActionEvent ae) {
-        String comm = ae.getActionCommand();
-        Action act;
-
-        try {
-            act = Action.valueOf(comm);
-        } catch(IllegalArgumentException iae) {
-            System.out.println("No such action: " + comm);
-            return;
-        }
-
-        switch(act) {
+//    public void actionPerformed(ActionEvent ae) {
+//        String comm = ae.getActionCommand();
+//
 //            case "Repaint":
 //                //canvas.drawToScreen();
 //                //canvas.displayImage();
@@ -184,21 +159,9 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 //                paus.setActionCommand("Pause");
 //
 //                break;
-            case LOAD_IMAGE:
-                loadImageToCanvas();
-                break;
-            
-            case OPEN_OPTIONS:
-                switchToOptionPane();
-                break;
+//    }
 
-            case CLOSE_OPTIONS:
-                switchFromOptionPane();
-                break;
-        }
-    }
-
-    private void loadImageToCanvas() {
+    protected void loadImageToCanvas() {
         openDialog.setVisible(true);
 
         String fileName = openDialog.getFile();
@@ -206,15 +169,13 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
         if(fileName == null) return;
 
         try {
-            canvasOperator.operate(
-                Action.LOAD_IMAGE,
-                openDialog.getDirectory() + fileName);
-        } catch (OperationException oe) {
+            canvasOperator.loadImage(openDialog.getDirectory() + fileName);
+        } catch(OperationException oe) {
             oe.printStackTrace();
         }
     }
 
-    private void switchToOptionPane() {
+    protected void openOptionPane() {
         CardLayout cl = (CardLayout) this.getLayout();
 
         cl.show(this, OPTION_PANEL.toString());
@@ -222,13 +183,19 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
         this.setTitle(TITLE + ": Options");
     }
 
-    private void switchFromOptionPane() {
+    protected void closeOptionPane() {
         CardLayout cl = (CardLayout) this.getLayout();
 
         cl.show(this, MAIN_PANEL.toString());
-
+        canvasOperator.update();
         this.setTitle(TITLE);
     }
+
+    protected void start() {}
+
+    protected void pause() {}
+
+    protected void stop() {}
 
     public void itemStateChanged(ItemEvent ie) {
 //         switch(
@@ -242,7 +209,7 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 //         //System.out.println(((Component) ie.getSource()).getName());
 //         //System.out.println(ie.getItem());
     }
-    
+
     public void textValueChanged(TextEvent te) {
 //         //System.out.println(te.paramString());
 //         switch(((Component) te.getSource()).getName()) {
@@ -279,7 +246,7 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 
     @Override
     public void windowOpened(WindowEvent windowEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        canvasOperator.update();
     }
 
     @Override
@@ -296,8 +263,8 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 //                        //    ie.printStackTrace();
 //                        //}
 //                    }
-                //if(animator.isStarted()) animator.stop();
-                System.exit(0);
+        //if(animator.isStarted()) animator.stop();
+        System.exit(0);
 //            }
 //        }.start();
     }
@@ -309,25 +276,21 @@ implements ActionListener, WindowListener, ItemListener, TextListener {
 
     @Override
     public void windowIconified(WindowEvent windowEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        canvasOperator.update();
     }
 
     @Override
     public void windowDeiconified(WindowEvent windowEvent) {
-        try {
-            canvasOperator.operate(Action.UPDATE_GRAPHICS);
-        } catch (OperationException oe) {
-            System.out.println(oe.getMessage());
-        }
+        canvasOperator.update();
     }
 
     @Override
     public void windowActivated(WindowEvent windowEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        canvasOperator.update();
     }
 
     @Override
     public void windowDeactivated(WindowEvent windowEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        canvasOperator.update();
     }
 }

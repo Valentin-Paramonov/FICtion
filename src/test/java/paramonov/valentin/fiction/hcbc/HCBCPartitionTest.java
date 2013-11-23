@@ -13,9 +13,7 @@ public class HCBCPartitionTest {
 
     @Test
     public void testCalculateMeanTC_ProducesExpectedValues_WholeBlockStartAtZero() {
-        partition =
-            new HCBCPartition(
-                null, tc, 0, 0, 0, 0, 0, 2, 2);
+        partition = new HCBCPartition(null, tc, 0, 0, 0, 0, 0, 2, 2);
 
         double[] meanValues = partition.calculateMeanTC();
 
@@ -26,9 +24,7 @@ public class HCBCPartitionTest {
 
     @Test
     public void testCalculateMeanTC_ProducesExpectedValues_SubBlockShifted() {
-        partition =
-            new HCBCPartition(
-                null, tc, 0, 0, 0, 1, 1, 1, 1);
+        partition = new HCBCPartition(null, tc, 0, 0, 0, 1, 1, 1, 1);
 
         double[] meanValues = partition.calculateMeanTC();
 
@@ -53,9 +49,7 @@ public class HCBCPartitionTest {
 
     @Test
     public void testCalculateVariance_ProducesExpectedValues_SubBlockShifted() {
-        partition =
-            new HCBCPartition(
-                null, tc, 0, 0, 0, 1, 1, 1, 1);
+        partition = new HCBCPartition(null, tc, 0, 0, 0, 1, 1, 1, 1);
 
         double[] meanValues = partition.calculateMeanTC();
         double[] variance = partition.calculateVariance(meanValues);

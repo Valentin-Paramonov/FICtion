@@ -2,6 +2,7 @@ package paramonov.valentin.fiction.hcbc;
 
 import org.junit.Before;
 import org.junit.Test;
+import paramonov.valentin.fiction.collections.Pair;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
 import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
@@ -42,7 +43,7 @@ public class HCBCModuleTest {
 
         double tcB = tc[0][0][1];
 
-        assertThat(tcB, equalTo(1/3.));
+        assertThat(tcB, equalTo(1 / 3.));
     }
 
     @Test
@@ -59,11 +60,38 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_ProducesGrayLevelImage() throws Exception {
-        Image colorImage =
-            processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image colorImage = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         hcbc.calculateTC(colorImage, true);
 
         processor.writeImageToFile(colorImage, RESOURCE_PATH + "gray.png");
+    }
+
+    @Test
+    public void testQTPartitionTest() throws Exception {
+
+    }
+
+    @Test
+    public void testHCBCEncode() throws Exception {
+        Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+
+        Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-5, 8);
+
+        Image encodedImage = encodeData.getSnd();
+
+        processor.writeImageToFile(encodedImage, RESOURCE_PATH + "encoded.png");
+    }
+
+    @Test
+    public void testHCBCDecode() throws Exception {
+        //Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image testImg = processor.loadImageFromFile("/home/valentine/tst.png");
+
+        Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-5, 3);
+
+        Image decodedImage = hcbc.hcbcDecode(encodeData.getFst(), encodeData.getSnd());
+
+        processor.writeImageToFile(decodedImage, RESOURCE_PATH + "decoded.png");
     }
 }
