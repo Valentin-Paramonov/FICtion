@@ -3,9 +3,9 @@ package paramonov.valentin.fiction.image;
 import java.nio.IntBuffer;
 
 public class Image {
-    private int[] argb;
-    private int w;
-    private int h;
+    private final int[] argb;
+    private final int w;
+    private final int h;
 
     public Image(int[] colorArray, int imgW, int imgH) {
         argb = colorArray;

@@ -4,9 +4,10 @@ import java.util.concurrent.RecursiveAction;
 
 class HCBCPartition extends RecursiveAction {
     private final HCBCTree tree;
-    private double[][][] tc;
-    private double tolerance;
-    private int maxLevel, currentLevel, startX, startY, w, h;
+    private final double[][][] tc;
+    private final double tolerance;
+    private final int maxLevel, startX, startY, w, h;
+    private int currentLevel;
 
     HCBCPartition(HCBCTree tree, double[][][] tc, double tolerance, int maxLevel, int currentLevel, int startX,
         int startY, int w, int h) {

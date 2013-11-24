@@ -13,10 +13,10 @@ import static paramonov.valentin.fiction.gui.builder.Component.MAIN_PANEL;
 import static paramonov.valentin.fiction.gui.builder.Component.OPTION_PANEL;
 
 public class App extends Frame implements WindowListener, ItemListener, TextListener {
-    public static final long serialVersionUID = 0xFADE;
-    public static final String TITLE = "FICtion";
-    public static int CANVAS_WIDTH = 768;
-    public static int CANVAS_HEIGHT = 432;
+    private static final long serialVersionUID = 0xFADE;
+    private static final String TITLE = "FICtion";
+    public static final int CANVAS_WIDTH = 768;
+    public static final int CANVAS_HEIGHT = 432;
 
     private CanvasOperator canvasOperator;
     private FileDialog openDialog;
@@ -27,7 +27,7 @@ public class App extends Frame implements WindowListener, ItemListener, TextList
         init();
     }
 
-    protected void init() {
+    private void init() {
         this.addWindowListener(this);
         buildGUI();
         setupCanvasOperator();
@@ -161,7 +161,7 @@ public class App extends Frame implements WindowListener, ItemListener, TextList
 //                break;
 //    }
 
-    protected void loadImageToCanvas() {
+    void loadImageToCanvas() {
         openDialog.setVisible(true);
 
         String fileName = openDialog.getFile();
@@ -175,7 +175,7 @@ public class App extends Frame implements WindowListener, ItemListener, TextList
         }
     }
 
-    protected void openOptionPane() {
+    void openOptionPane() {
         CardLayout cl = (CardLayout) this.getLayout();
 
         cl.show(this, OPTION_PANEL.toString());
@@ -183,7 +183,7 @@ public class App extends Frame implements WindowListener, ItemListener, TextList
         this.setTitle(TITLE + ": Options");
     }
 
-    protected void closeOptionPane() {
+    void closeOptionPane() {
         CardLayout cl = (CardLayout) this.getLayout();
 
         cl.show(this, MAIN_PANEL.toString());
@@ -191,11 +191,11 @@ public class App extends Frame implements WindowListener, ItemListener, TextList
         this.setTitle(TITLE);
     }
 
-    protected void start() {}
+    void start() {}
 
-    protected void pause() {}
+    void pause() {}
 
-    protected void stop() {}
+    void stop() {}
 
     public void itemStateChanged(ItemEvent ie) {
 //         switch(

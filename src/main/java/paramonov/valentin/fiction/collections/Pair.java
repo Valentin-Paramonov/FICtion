@@ -1,8 +1,8 @@
 package paramonov.valentin.fiction.collections;
 
 public class Pair<F, S> {
-    private F fst;
-    private S snd;
+    private final F fst;
+    private final S snd;
 
     public Pair(F first, S second) {
         fst = first;

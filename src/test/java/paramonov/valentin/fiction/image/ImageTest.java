@@ -11,15 +11,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ImageTest {
-    private ImageProcessor processor;
     private Image img;
     private static final String PATH = "src/test/resources/";
     private static final String TEST_IMG = PATH + "test image.png";
 
     @Before
     public void setUp() throws Exception {
-        processor =
-            ImageProcessorProvider.getImageProcessor();
+        ImageProcessor processor = ImageProcessorProvider.getImageProcessor();
 
         img = processor.loadImageFromFile(TEST_IMG);
     }

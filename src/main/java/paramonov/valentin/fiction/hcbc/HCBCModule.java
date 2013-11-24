@@ -6,8 +6,7 @@ import paramonov.valentin.fiction.image.Image;
 
 import java.util.concurrent.ForkJoinPool;
 
-public class HCBCModule {
-
+class HCBCModule {
     public Pair<HCBCTree, Image> hcbcEncode(
         Image img, double tolerance, int maxLevel) {
 
@@ -101,7 +100,7 @@ public class HCBCModule {
     }
 
 
-    public HCBCTree qtPartition(Image img, double tolerance, int maxLevel) {
+    private HCBCTree qtPartition(Image img, double tolerance, int maxLevel) {
         int w = img.getWidth();
         int h = img.getHeight();
         double[][][] tc = calculateTC(img, true);

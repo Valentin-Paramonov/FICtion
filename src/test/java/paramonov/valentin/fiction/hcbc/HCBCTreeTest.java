@@ -10,8 +10,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HCBCTreeTest {
-    private HCBCTree oddTree = new HCBCTree();
-    private HCBCTree evenTree = new HCBCTree();
+    private final HCBCTree oddTree = new HCBCTree();
+    private final HCBCTree evenTree = new HCBCTree();
 
     @Before
     public void setUp() {

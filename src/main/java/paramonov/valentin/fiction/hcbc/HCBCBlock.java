@@ -1,13 +1,13 @@
 package paramonov.valentin.fiction.hcbc;
 
 public class HCBCBlock {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private double mtcR;
-    private double mtcG;
-    private double mtcB;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int height;
+    private final double mtcR;
+    private final double mtcG;
+    private final double mtcB;
 
     public HCBCBlock(int x, int y, int width, int height, double mtcR, double mtcG, double mtcB) {
 

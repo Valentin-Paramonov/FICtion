@@ -5,14 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class HCBCIterator implements Iterator<HCBCBlock> {
+class HCBCIterator implements Iterator<HCBCBlock> {
     private Iterator<HCBCBlock> iterator;
 
     HCBCIterator(HCBCTree tree) {
         init(tree);
     }
 
-    protected void init(HCBCTree tree) {
+    private void init(HCBCTree tree) {
         List<HCBCBlock> blockList = new ArrayList<>(tree.size());
 
         if(tree.size() != 0) {
@@ -37,7 +37,7 @@ public class HCBCIterator implements Iterator<HCBCBlock> {
         throw new UnsupportedOperationException();
     }
 
-    protected void treeToArray(HCBCTree tree, List<HCBCBlock> blocks) {
+    private void treeToArray(HCBCTree tree, List<HCBCBlock> blocks) {
         if(!tree.hasChildren()) {
             blocks.add(tree.getElement());
             return;

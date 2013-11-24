@@ -238,7 +238,7 @@ public class AppGLCanvas
         return ready;
     }
 
-    protected void clear(GL2 gl) {
+    void clear(GL2 gl) {
         gl.glDisable(GL_BLEND);
         gl.glClearColor(0, 0, 0, 1);
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

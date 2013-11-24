@@ -7,7 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HCBCPartitionTest {
     private HCBCPartition partition;
-    private double[][][] tc = {
+    private final double[][][] tc = {
         {{0, 0, 0}, {1., 2., 3.}},
         {{4., 5., 6.}, {7., 8., 9.}}};
 
