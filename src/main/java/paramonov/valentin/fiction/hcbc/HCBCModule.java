@@ -45,9 +45,12 @@ public class HCBCModule {
                 for(int y = startY; y < endY; y++) {
                     int index = y * imgW + x;
                     int color = colors[index] & 0xff;
-                    int r = ((int) Math.round(mtcR * color)) & 0xff;
-                    int g = ((int) Math.round(mtcG * color)) & 0xff;
-                    int b = ((int) Math.round(mtcB * color)) & 0xff;
+                    int r = (int) Math.round(mtcR * color);
+                    r = r > 0xff ? 0xff : r;
+                    int g = (int) Math.round(mtcG * color);
+                    g = g > 0xff ? 0xff : g;
+                    int b = (int) Math.round(mtcB * color);
+                    b = b > 0xff ? 0xff : b;
 
                     colors[index] = (colors[index] & 0xff000000) | r << 16 | g << 8 | b;
                 }
@@ -72,9 +75,9 @@ public class HCBCModule {
         double[][][] tc = new double[w][h][3];
 
         for(int i = 0; i < colors.length; i++) {
-            int r = (colors[i] >> 16) & 0xff;
-            int g = (colors[i] >> 8) & 0xff;
-            int b = colors[i] & 0xff;
+            double r = (colors[i] >> 16) & 0xff;
+            double g = (colors[i] >> 8) & 0xff;
+            double b = colors[i] & 0xff;
             double sum = r + g + b;
 
             if(sum == 0) continue;
@@ -87,7 +90,8 @@ public class HCBCModule {
             tc[x][y][2] = b / sum;
 
             if(produceGrayImage) {
-                int weightedSum = ((int) Math.floor(r * tc[x][y][0] + g * tc[x][y][1] + b * tc[x][y][2])) & 0xff;
+                int weightedSum = (int) Math.round((r * r + g * g + b * b) / sum);
+                weightedSum = weightedSum > 0xff ? 0xff : weightedSum;
 
                 colors[i] = (colors[i] & 0xff000000) | weightedSum << 16 | weightedSum << 8 | weightedSum;
             }
@@ -97,9 +101,7 @@ public class HCBCModule {
     }
 
 
-    public HCBCTree qtPartition(
-        Image img, double tolerance, int maxLevel) {
-
+    public HCBCTree qtPartition(Image img, double tolerance, int maxLevel) {
         int w = img.getWidth();
         int h = img.getHeight();
         double[][][] tc = calculateTC(img, true);

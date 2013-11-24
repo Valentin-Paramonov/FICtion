@@ -85,10 +85,9 @@ public class HCBCModuleTest {
 
     @Test
     public void testHCBCDecode() throws Exception {
-        //Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
-        Image testImg = processor.loadImageFromFile("/home/valentine/tst.png");
+        Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
-        Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-5, 3);
+        Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-4, 8);
 
         Image decodedImage = hcbc.hcbcDecode(encodeData.getFst(), encodeData.getSnd());
 

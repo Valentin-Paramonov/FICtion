@@ -8,10 +8,8 @@ class HCBCPartition extends RecursiveAction {
     private double tolerance;
     private int maxLevel, currentLevel, startX, startY, w, h;
 
-    HCBCPartition(
-        HCBCTree tree, double[][][] tc,
-        double tolerance, int maxLevel, int currentLevel,
-        int startX, int startY, int w, int h) {
+    HCBCPartition(HCBCTree tree, double[][][] tc, double tolerance, int maxLevel, int currentLevel, int startX,
+        int startY, int w, int h) {
 
         this.tree = tree;
         this.tc = tc;
@@ -59,8 +57,8 @@ class HCBCPartition extends RecursiveAction {
         int endX = startX + w;
         int endY = startY + h;
 
-        for(int y = startY; y < endY; y++) {
-            for(int x = startX; x < endX; x++) {
+        for(int x = startX; x < endX; x++) {
+            for(int y = startY; y < endY; y++) {
                 meanTC[0] += tc[x][y][0];
                 meanTC[1] += tc[x][y][1];
                 meanTC[2] += tc[x][y][2];
@@ -82,8 +80,8 @@ class HCBCPartition extends RecursiveAction {
         int endX = startX + w;
         int endY = startY + h;
 
-        for(int y = startY; y < endY; y++) {
-            for(int x = startX; x < endX; x++) {
+        for(int x = startX; x < endX; x++) {
+            for(int y = startY; y < endY; y++) {
                 double diffR = tc[x][y][0] - meanTC[0];
                 double diffG = tc[x][y][1] - meanTC[1];
                 double diffB = tc[x][y][2] - meanTC[2];

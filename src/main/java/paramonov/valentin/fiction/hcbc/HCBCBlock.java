@@ -9,9 +9,7 @@ public class HCBCBlock {
     private double mtcG;
     private double mtcB;
 
-    public HCBCBlock(
-        int x, int y, int width, int height,
-        double mtcR, double mtcG, double mtcB) {
+    public HCBCBlock(int x, int y, int width, int height, double mtcR, double mtcG, double mtcB) {
 
         this.x = x;
         this.y = y;
