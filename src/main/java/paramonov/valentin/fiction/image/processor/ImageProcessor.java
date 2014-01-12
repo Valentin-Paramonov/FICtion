@@ -11,9 +11,7 @@ import java.io.IOException;
 public class ImageProcessor {
     ImageProcessor() {}
 
-    public Image loadImageFromFile(String file)
-        throws IOException {
-
+    public Image loadImageFromFile(String file) throws IOException {
         BufferedImage buffImg = loadBufferedImage(file);
 
         int w = buffImg.getWidth();
@@ -24,24 +22,39 @@ public class ImageProcessor {
         return new Image(colorArray, w, h);
     }
 
-    public void writeImageToFile(Image img, String file)
-        throws IOException {
-
+    public void writeImageToFile(Image img, String outputFileName) throws IOException {
         int w = img.getWidth();
         int h = img.getHeight();
-        String pngFile =
-            file.endsWith(".png") ?
-                file : file + ".png";
 
-        BufferedImage buffImg =
-            new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        if(outputFileName.endsWith(".png")) {
+            writeImageToPngFile(img, outputFileName, w, h);
+        } else if(outputFileName.endsWith(".dat")) {
+            writeImageToDatFile(img, outputFileName, w, h);
+        } else {
+            writeImageToPngFile(img, outputFileName + ".png", w, h);
+        }
+    }
 
-        buffImg.setRGB(0, 0, w, h, img.getARGB(), 0, w);
+    void writeImageToPngFile(Image img, String outputFileName, int width, int height) throws IOException {
+        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        try(FileOutputStream fos =
-                new FileOutputStream(pngFile)) {
+        buffImg.setRGB(0, 0, width, height, img.getARGB(), 0, width);
 
+        try(FileOutputStream fos = new FileOutputStream(outputFileName)) {
             ImageIO.write(buffImg, "png", fos);
+        }
+    }
+
+    void writeImageToDatFile(Image img, String outputFileName, int width, int height) throws IOException {
+        byte[] byteImage = new byte[width * height];
+        int[] colorImage = img.getARGB();
+
+        for(int i = 0; i < byteImage.length; i++) {
+            byteImage[i] = (byte) (colorImage[i] & 0xff);
+        }
+
+        try(FileOutputStream fos = new FileOutputStream(outputFileName, true)) {
+            fos.write(byteImage);
         }
     }
 
@@ -66,7 +79,6 @@ public class ImageProcessor {
             gray[i] = (color & 0xff000000) | (luma << 16) | (luma << 8) | luma;
         }
 
-        return new Image(
-            gray, img.getWidth(), img.getHeight());
+        return new Image(gray, img.getWidth(), img.getHeight());
     }
 }

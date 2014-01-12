@@ -89,7 +89,7 @@ class HCBCModule {
             tc[x][y][2] = b / sum;
 
             if(produceGrayImage) {
-                int weightedSum = (int) Math.round((r * r + g * g + b * b) / sum);
+                int weightedSum = (int) ((r * r + g * g + b * b) / sum);
                 weightedSum = weightedSum > 0xff ? 0xff : weightedSum;
 
                 colors[i] = (colors[i] & 0xff000000) | weightedSum << 16 | weightedSum << 8 | weightedSum;

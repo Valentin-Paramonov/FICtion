@@ -110,4 +110,11 @@ public class ImageProcessorTest {
 
         processor.writeImageToFile(grayscaleImage, RESOURCE_PATH + "grayscale.png");
     }
+
+    @Test
+    public void testWriteImageToDatFile() throws Exception {
+        Image img = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+
+        processor.writeImageToDatFile(img, RESOURCE_PATH + "lenna.dat", img.getWidth(), img.getHeight());
+    }
 }

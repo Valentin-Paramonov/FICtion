@@ -66,7 +66,7 @@ class HCBCPartition extends RecursiveAction {
             }
         }
 
-        int blockSize = w * h;
+        double blockSize = w * h;
 
         meanTC[0] /= blockSize;
         meanTC[1] /= blockSize;
@@ -93,7 +93,7 @@ class HCBCPartition extends RecursiveAction {
             }
         }
 
-        int blockSize = w * h;
+        double blockSize = w * h;
 
         variance[0] /= blockSize;
         variance[1] /= blockSize;
