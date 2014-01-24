@@ -1,6 +1,8 @@
 package paramonov.valentin.fiction.image.processor;
 
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.Image;
 
@@ -116,5 +118,25 @@ public class ImageProcessorTest {
         Image img = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         processor.writeImageToDatFile(img, RESOURCE_PATH + "lenna.dat", img.getWidth(), img.getHeight());
+    }
+
+    @Test
+    public void testPSNR_SameImageIsZero() throws Exception {
+        Image img = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+
+        double psnr = processor.psnr(img, img);
+
+        Assert.assertThat(psnr, equalTo(0.));
+    }
+
+    @Ignore
+    @Test
+    public void testName() throws Exception {
+        Image img1 = processor.loadImageFromFile("/home/valentine/" + "lenna.bmp");
+        Image img2 = processor.loadImageFromFile("/home/valentine/" + "lenna.jpg");
+
+        double psnr = processor.psnr(img1, img2);
+
+        Assert.assertThat(psnr, equalTo(0.));
     }
 }

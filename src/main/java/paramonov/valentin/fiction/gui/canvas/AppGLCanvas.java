@@ -1,20 +1,20 @@
 package paramonov.valentin.fiction.gui.canvas;
 
-import paramonov.valentin.fiction.gui.action.canvas.CanvasAction;
+import paramonov.valentin.fiction.gui.canvas.action.CanvasAction;
+import paramonov.valentin.fiction.gui.canvas.operator.OperatableCanvas;
 import paramonov.valentin.fiction.image.Image;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLCanvas;
 import java.nio.IntBuffer;
 
 import static javax.media.opengl.GL2.*;
-import static paramonov.valentin.fiction.gui.action.canvas.CanvasAction.CANVAS_NO_ACTION;
+import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.CANVAS_NO_ACTION;
 
-public class AppGLCanvas
-    extends GLCanvas implements GLEventListener {
-
+public class AppGLCanvas extends GLCanvas implements GLEventListener, OperatableCanvas {
     public static final long serialVersionUID = 0xf00d;
     private static final int DEFAULT_TEXTURE = 0;
 
@@ -23,8 +23,17 @@ public class AppGLCanvas
     private Image imageToLoad;
     private boolean ready;
     private int currentTexture;
+    private final CanvasGLTextureProcessor textureProcessor;
+    private final CanvasGLFramebufferProcessor framebufferProcessor;
+    private final CanvasGLImageProcessor imageProcessor;
 
-    public AppGLCanvas() {
+    public AppGLCanvas(CanvasGLTextureProcessor textureProcessor, CanvasGLFramebufferProcessor framebufferProcessor,
+        CanvasGLImageProcessor imageProcessor) throws GLException {
+
+        this.textureProcessor = textureProcessor;
+        this.framebufferProcessor = framebufferProcessor;
+        this.imageProcessor = imageProcessor;
+
         addGLEventListener(this);
         action = CANVAS_NO_ACTION;
         setReadyState(false);
@@ -84,21 +93,23 @@ public class AppGLCanvas
         return (double) getWidth() / (h != 0 ? h : 1);
     }
 
-    void performAction(CanvasAction action) {
+    @Override
+    public void performAction(CanvasAction action) {
         this.action = action;
         display();
     }
 
-    void setImageToLoad(Image imageToLoad) {
+    @Override
+    public void setImageToLoad(Image imageToLoad) {
         this.imageToLoad = imageToLoad;
     }
 
     private void createImageTexture(GL2 gl) {
-        int texId = createTexture(gl);
-        loadImage2Texture(gl, texId, imageToLoad);
-        displayImageTexture(gl, texId, imageToLoad);
+        int textureId = textureProcessor.createTextureFromImage(gl, imageToLoad);
+        setCurrentTexture(textureId);
 
-        setCurrentTexture(texId);
+        displayImageTexture(gl, textureId, imageToLoad);
+
         setReadyState(true);
     }
 
@@ -109,51 +120,6 @@ public class AppGLCanvas
     private void setCurrentTexture(int texId) {
         currentTexture = texId;
     }
-
-    private int genTextureID(GL2 gl) {
-        final int[] id = new int[1];
-
-        gl.glGenTextures(1, id, 0);
-
-        return id[0];
-    }
-
-    private int createTexture(GL2 gl) {
-        int id;
-
-        id = genTextureID(gl);
-
-        gl.glBindTexture(GL_TEXTURE_2D, id);
-
-        gl.glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-
-        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-        gl.glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-        gl.glBindTexture(GL_TEXTURE_2D, DEFAULT_TEXTURE);
-
-        return id;
-    }
-
-    private void loadImage2Texture(
-        GL2 gl, int texId, Image imageToLoad) {
-
-        gl.glBindTexture(GL_TEXTURE_2D, texId);
-
-        gl.glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA,
-            imageToLoad.getWidth(), imageToLoad.getHeight(),
-            0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-            imageToLoad.getBuffer()
-        );
-
-        gl.glBindTexture(GL_TEXTURE_2D, DEFAULT_TEXTURE);
-    }
-
 
     private void displayImageTexture(GL2 gl, int texId, Image img) {
         int imgWidth = img.getWidth();
@@ -234,6 +200,7 @@ public class AppGLCanvas
         gl.glBindTexture(GL_TEXTURE_2D, DEFAULT_TEXTURE);
     }
 
+    @Override
     public boolean isReady() {
         return ready;
     }

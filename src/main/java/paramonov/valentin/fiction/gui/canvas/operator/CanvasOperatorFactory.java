@@ -1,6 +1,6 @@
-package paramonov.valentin.fiction.gui.canvas;
+package paramonov.valentin.fiction.gui.canvas.operator;
 
-import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
+import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
 
 public class CanvasOperatorFactory {
     private CanvasOperatorFactory() {}

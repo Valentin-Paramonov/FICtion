@@ -2,6 +2,9 @@ package paramonov.valentin.fiction.gui;
 
 import paramonov.valentin.fiction.gui.builder.GUIBuilder;
 import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
+import paramonov.valentin.fiction.gui.canvas.CanvasGLFramebufferProcessor;
+import paramonov.valentin.fiction.gui.canvas.CanvasGLImageProcessor;
+import paramonov.valentin.fiction.gui.canvas.CanvasGLTextureProcessor;
 
 import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
@@ -66,11 +69,14 @@ public class AppGUIBuilder implements GUIBuilder<App> {
     }
 
     private Panel buildCanvasPanel() {
-        Panel canvasPanel = createFlowPanel();
-        GLCanvas canvas = new AppGLCanvas();
+        final CanvasGLTextureProcessor textureProcessor = new CanvasGLTextureProcessor();
+        final CanvasGLFramebufferProcessor framebufferProcessor = new CanvasGLFramebufferProcessor(textureProcessor);
+        final CanvasGLImageProcessor imageProcessor = new CanvasGLImageProcessor(textureProcessor, framebufferProcessor);
+        GLCanvas canvas = new AppGLCanvas(textureProcessor, framebufferProcessor, imageProcessor);
 
         canvas.setSize(new Dimension(App.CANVAS_WIDTH, App.CANVAS_HEIGHT));
 
+        Panel canvasPanel = createFlowPanel();
         canvasPanel.add(canvas, CANVAS.toString(), 0);
 
         return canvasPanel;
@@ -111,6 +117,8 @@ public class AppGUIBuilder implements GUIBuilder<App> {
             }
         });
 
+        final Button saveImage = createButton("SAVE IMAGE");
+
         final Button openOptions = createButton("OPTIONS");
         openOptions.addActionListener(new ActionListener() {
             @Override
@@ -120,6 +128,7 @@ public class AppGUIBuilder implements GUIBuilder<App> {
         });
 
         buttonPanel.add(loadImage);
+        buttonPanel.add(saveImage);
         buttonPanel.add(openOptions);
 
         return buttonPanel;

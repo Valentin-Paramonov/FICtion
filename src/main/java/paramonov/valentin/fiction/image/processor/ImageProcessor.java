@@ -81,4 +81,38 @@ public class ImageProcessor {
 
         return new Image(gray, img.getWidth(), img.getHeight());
     }
+
+    public double psnr(Image original, Image comparable) {
+        double mse = 0;
+
+        int[] originalRGB = original.getARGB();
+        int[] comparableRGB = comparable.getARGB();
+
+        if(originalRGB.length != comparableRGB.length) {
+            return -1;
+        }
+
+        for(int i = 0; i < originalRGB.length; i++) {
+            int originalR = (originalRGB[i] >> 16) & 0xff;
+            int comparableR = (comparableRGB[i] >> 16) & 0xff;
+            int originalG = (originalRGB[i] >> 8) & 0xff;
+            int comparableG = (comparableRGB[i] >> 8) & 0xff;
+            int originalB = originalRGB[i] & 0xff;
+            int comparableB = comparableRGB[i] & 0xff;
+
+            double diffR = originalR - comparableR;
+            double diffG = originalG - comparableG;
+            double diffB = originalB - comparableB;
+
+            mse += diffR * diffR + diffG * diffG + diffB * diffB;
+        }
+
+        if(mse == 0) return 0.;
+
+        mse /= 3 * originalRGB.length;
+        //double psnr = 20 * Math.log10(255 * 255) - 10 * Math.log10(mse);
+        double psnr = 10 * Math.log10((255 * 255) / mse);
+
+        return psnr;
+    }
 }

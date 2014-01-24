@@ -1,6 +1,7 @@
-package paramonov.valentin.fiction.gui.canvas;
+package paramonov.valentin.fiction.gui.canvas.operator;
 
 import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
+import paramonov.valentin.fiction.gui.canvas.operator.OperatableCanvas;
 import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationException;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
@@ -8,14 +9,14 @@ import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.io.IOException;
 
-import static paramonov.valentin.fiction.gui.action.canvas.CanvasAction.*;
+import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.*;
 
 public class AppGLCanvasOperator implements CanvasOperator {
-    private AppGLCanvas canvas;
+    private OperatableCanvas canvas;
 
     AppGLCanvasOperator() {}
 
-    void setCanvas(AppGLCanvas canvas) {
+    void setCanvas(OperatableCanvas canvas) {
         this.canvas = canvas;
     }
 

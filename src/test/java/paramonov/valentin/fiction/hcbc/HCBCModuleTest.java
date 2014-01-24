@@ -24,8 +24,7 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_ArrayHasExpectedDims() throws Exception {
-        Image img =
-            processor.loadImageFromFile(TEST_IMG);
+        Image img = processor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img, true);
 
@@ -36,8 +35,7 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_TCForWhitePixel() throws Exception {
-        Image img =
-            processor.loadImageFromFile(TEST_IMG);
+        Image img = processor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img, true);
 
@@ -48,8 +46,7 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_TCForBlackPixel() throws Exception {
-        Image img =
-            processor.loadImageFromFile(TEST_IMG);
+        Image img = processor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img);
 

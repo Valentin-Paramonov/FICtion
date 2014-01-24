@@ -1,4 +1,4 @@
-package paramonov.valentin.fiction.gui.action.canvas;
+package paramonov.valentin.fiction.gui.canvas.action;
 
 public enum CanvasAction {
     CANVAS_NO_ACTION,

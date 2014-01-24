@@ -4,6 +4,5 @@ import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationExcepti
 
 public interface CanvasOperator {
     void loadImage(String image) throws OperationException;
-
     void update();
 }

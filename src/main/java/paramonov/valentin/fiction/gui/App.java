@@ -1,7 +1,7 @@
 package paramonov.valentin.fiction.gui;
 
 import paramonov.valentin.fiction.gui.canvas.AppGLCanvas;
-import paramonov.valentin.fiction.gui.canvas.CanvasOperatorFactory;
+import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperatorFactory;
 import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
 import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationException;
 import paramonov.valentin.fiction.gui.dialog.ImageFileDialog;
