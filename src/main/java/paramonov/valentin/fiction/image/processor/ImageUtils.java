@@ -3,7 +3,7 @@ package paramonov.valentin.fiction.image.processor;
 import paramonov.valentin.fiction.image.Image;
 
 public class ImageUtils {
-    public static double compareIdentical(Image dis, Image dat) {
+    public static double compareIdenticalGrayscale(Image dis, Image dat) {
         final int width = dis.getWidth();
         final int height = dis.getHeight();
         if(width != dat.getWidth() || height != dat.getHeight()) {
@@ -18,8 +18,8 @@ public class ImageUtils {
             final int startPos = h * width;
             for(int w = 0; w < width; w++) {
                 final int pos = startPos + w;
-                final int disColor = disColors[pos];
-                final int datColor = datColors[pos];
+                final int disColor = disColors[pos] & 0xff;
+                final int datColor = datColors[pos] & 0xff;
                 final int diffColor = disColor - datColor;
                 diff += diffColor * diffColor;
             }
@@ -53,8 +53,8 @@ public class ImageUtils {
                 int greenColor = 0;
                 int blueColor = 0;
                 for(int i = 0; i < factorSquared; i++) {
-                    redColor += (colors[i] & 0xff0000) >> 16;
-                    greenColor += (colors[i] & 0xff00) >> 8;
+                    redColor += (colors[i] & 0xff0000) >>> 16;
+                    greenColor += (colors[i] & 0xff00) >>> 8;
                     blueColor += (colors[i] & 0xff);
                 }
                 redColor /= factorSquared;

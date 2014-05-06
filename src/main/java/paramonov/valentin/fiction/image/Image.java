@@ -78,7 +78,8 @@ public class Image {
 
     public int getColor(int x, int y) {
         if(x < 0 || y < 0 || x >= w || y >= h) {
-            throw new ImageDimensionException();
+            final String errorMessage = String.format("x: %d, y: %d", x, y);
+            throw new ImageDimensionException(errorMessage);
         }
         final int pos = w * y + x;
 
@@ -87,10 +88,20 @@ public class Image {
 
     public void setColor(int x, int y, int color) {
         if(x < 0 || y < 0 || x >= w || y >= h) {
-            throw new ImageDimensionException();
+            final String errorMessage = String.format("x: %d, y: %d", x, y);
+            throw new ImageDimensionException(errorMessage);
         }
         final int pos = w * y + x;
 
         argb[pos] = color;
+    }
+
+    public Image copy() {
+        final int[] argbCopy = new int[argb.length];
+        for(int i = 0; i < argb.length; i++) {
+            argbCopy[i] = argb[i];
+        }
+
+        return new Image(argbCopy, w, h);
     }
 }
