@@ -1,4 +1,4 @@
-package paramonov.valentin.fiction.gui.gl.processor;
+package paramonov.valentin.fiction.gl.processor;
 
 public class InvalidBufferSizeException extends Exception {
 }

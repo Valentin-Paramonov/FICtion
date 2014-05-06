@@ -27,3 +27,13 @@ target/*
 
 .directory
 
+
+############
+# RESOURCE #
+############
+
+src/test/resources/*
+!src/test/resources/lenna.png
+!src/test/resources/lenna rect.png
+!src/test/resources/test image.png
+

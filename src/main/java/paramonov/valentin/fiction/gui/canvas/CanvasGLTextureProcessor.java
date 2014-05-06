@@ -1,7 +1,8 @@
 package paramonov.valentin.fiction.gui.canvas;
 
 import com.jogamp.common.nio.Buffers;
-import paramonov.valentin.fiction.gui.gl.processor.GLTextureProcessor;
+import paramonov.valentin.fiction.collections.Pair;
+import paramonov.valentin.fiction.gl.processor.GLTextureProcessor;
 import paramonov.valentin.fiction.image.Image;
 
 import javax.media.opengl.GL2;
@@ -11,6 +12,8 @@ import static javax.media.opengl.GL2.GL_CLAMP;
 import static javax.media.opengl.GL2.GL_R;
 import static javax.media.opengl.GL2ES1.GL_TEXTURE_ENV;
 import static javax.media.opengl.GL2ES1.GL_TEXTURE_ENV_MODE;
+import static javax.media.opengl.GL2GL3.GL_TEXTURE_HEIGHT;
+import static javax.media.opengl.GL2GL3.GL_TEXTURE_WIDTH;
 import static javax.media.opengl.GL2GL3.GL_UNSIGNED_INT_8_8_8_8_REV;
 
 public class CanvasGLTextureProcessor implements GLTextureProcessor {
@@ -90,5 +93,20 @@ public class CanvasGLTextureProcessor implements GLTextureProcessor {
         gl.glBindTexture(GL_TEXTURE_2D, textureId);
         gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_R, w, h, 0, GL_R, GL_UNSIGNED_BYTE, Buffers.newDirectByteBuffer(image));
         gl.glBindTexture(GL_TEXTURE_2D, oldTextureId);
+    }
+
+    @Override
+    public Pair<Integer, Integer> getTextureDims(GL2 gl, int textureId) {
+        int oldTexture = getCurrentTextureId(gl);
+        final int[] dims = new int[2];
+
+        gl.glBindTexture(GL_TEXTURE_2D, textureId);
+
+        gl.glGetTexParameteriv(GL_TEXTURE_WIDTH, textureId, dims, 0);
+        gl.glGetTexParameteriv(GL_TEXTURE_HEIGHT, textureId, dims, 1);
+
+        gl.glBindTexture(GL_TEXTURE_2D, oldTexture);
+
+        return new Pair<>(dims[0], dims[1]);
     }
 }

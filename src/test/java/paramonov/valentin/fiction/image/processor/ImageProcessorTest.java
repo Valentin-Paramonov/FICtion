@@ -121,12 +121,12 @@ public class ImageProcessorTest {
     }
 
     @Test
-    public void testPSNR_SameImageIsZero() throws Exception {
+    public void testPSNR_SameImageIsInfinity() throws Exception {
         Image img = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         double psnr = processor.psnr(img, img);
 
-        Assert.assertThat(psnr, equalTo(0.));
+        Assert.assertThat(psnr, equalTo(Double.POSITIVE_INFINITY));
     }
 
     @Ignore

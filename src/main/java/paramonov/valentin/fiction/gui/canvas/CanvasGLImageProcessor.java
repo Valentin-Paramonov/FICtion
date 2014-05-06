@@ -1,8 +1,8 @@
 package paramonov.valentin.fiction.gui.canvas;
 
-import paramonov.valentin.fiction.gui.gl.processor.GLFramebufferProcessor;
-import paramonov.valentin.fiction.gui.gl.processor.GLImageProcessor;
-import paramonov.valentin.fiction.gui.gl.processor.GLTextureProcessor;
+import paramonov.valentin.fiction.gl.processor.GLFramebufferProcessor;
+import paramonov.valentin.fiction.gl.processor.GLImageProcessor;
+import paramonov.valentin.fiction.gl.processor.GLTextureProcessor;
 
 import javax.media.opengl.GL2;
 import java.nio.IntBuffer;

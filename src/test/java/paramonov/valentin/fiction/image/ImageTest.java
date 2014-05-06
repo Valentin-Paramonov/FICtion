@@ -6,8 +6,10 @@ import paramonov.valentin.fiction.image.processor.ImageProcessor;
 import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ImageTest {
@@ -65,5 +67,29 @@ public class ImageTest {
         int pixel = img.getARGB()[0];
 
         assertThat(pixel, equalTo(0xff00ff));
+    }
+
+    @Test
+    public void testGetColor_PixelHasExpectedValue() throws Exception {
+        final int[] colors = {1, 2, 3, 4, 5, 6};
+        final Image image = new Image(colors, 3, 2);
+
+        final int color = image.getColor(1, 1);
+
+        assertThat(color, equalTo(5));
+    }
+
+    @Test
+    public void testSetColor_PixelValueChanges() throws Exception {
+        final int[] colors = {1, 2, 3, 4, 5, 6};
+        final Image image = new Image(colors, 3, 2);
+
+        image.setColor(1, 1, 7);
+        final ArrayList<Integer> colorList = new ArrayList<Integer>(colors.length);
+        for(int i = 0; i < colors.length; i++) {
+            colorList.add(colors[i]);
+        }
+
+        assertThat(colorList, hasItems(1, 2, 3, 4, 7, 6));
     }
 }

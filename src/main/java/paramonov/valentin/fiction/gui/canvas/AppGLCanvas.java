@@ -1,17 +1,26 @@
 package paramonov.valentin.fiction.gui.canvas;
 
+import paramonov.valentin.fiction.gl.processor.GLFramebufferProcessor;
+import paramonov.valentin.fiction.gl.processor.GLImageProcessor;
+import paramonov.valentin.fiction.gl.processor.GLTextureProcessor;
 import paramonov.valentin.fiction.gui.canvas.action.CanvasAction;
 import paramonov.valentin.fiction.gui.canvas.operator.OperatableCanvas;
 import paramonov.valentin.fiction.image.Image;
+import paramonov.valentin.fiction.image.processor.ImageProcessor;
+import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
+import paramonov.valentin.fiction.transformation.GLTransformator;
+import paramonov.valentin.fiction.transformation.Rotate90CWGLTransform;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLCanvas;
-import java.nio.IntBuffer;
+
+import java.io.IOException;
 
 import static javax.media.opengl.GL2.*;
+import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.CANCAS_TRANSFORM;
 import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.CANVAS_NO_ACTION;
 
 public class AppGLCanvas extends GLCanvas implements GLEventListener, OperatableCanvas {
@@ -23,12 +32,16 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
     private Image imageToLoad;
     private boolean ready;
     private int currentTexture;
-    private final CanvasGLTextureProcessor textureProcessor;
-    private final CanvasGLFramebufferProcessor framebufferProcessor;
-    private final CanvasGLImageProcessor imageProcessor;
+    private final GLTextureProcessor textureProcessor;
+    private final GLFramebufferProcessor framebufferProcessor;
+    private final GLImageProcessor imageProcessor;
 
-    public AppGLCanvas(CanvasGLTextureProcessor textureProcessor, CanvasGLFramebufferProcessor framebufferProcessor,
-        CanvasGLImageProcessor imageProcessor) throws GLException {
+//    private GLTransformator[] transformators;
+//    private Image transformImage;
+//    private byte[][] imageTransformations;
+
+    public AppGLCanvas(GLTextureProcessor textureProcessor, GLFramebufferProcessor framebufferProcessor,
+        GLImageProcessor imageProcessor) throws GLException {
 
         this.textureProcessor = textureProcessor;
         this.framebufferProcessor = framebufferProcessor;
@@ -51,6 +64,8 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
         gl.glEnable(GL_BLEND);
 
         clear(gl);
+
+//        transformTest();
     }
 
     @Override
@@ -70,12 +85,16 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
                 break;
 
             case CANVAS_REPAINT:
-                drawImage(gl, currentTexture);
+                imageProcessor.drawTexture(gl, 0, currentTexture);
                 break;
 
             case CANVAS_CLEAR:
                 clear(gl);
                 break;
+
+//            case CANCAS_TRANSFORM:
+//                performTransformations(gl);
+//                break;
         }
 
         action = CANVAS_NO_ACTION;
@@ -138,7 +157,7 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
 
         scaleImage(gl, img);
 
-        drawImage(gl, texId);
+        imageProcessor.drawTexture(gl, 0, texId);
     }
 
     private void scaleImage(GL2 gl, Image img) {
@@ -159,47 +178,6 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
         }
     }
 
-    private void drawImage(GL2 gl, int texId) {
-        gl.glBindTexture(GL_TEXTURE_2D, texId);
-
-        IntBuffer params = IntBuffer.wrap(new int[2]);
-
-        gl.glGetTexLevelParameteriv(
-            GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, params);
-
-        params.position(1);
-
-        gl.glGetTexLevelParameteriv(
-            GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, params);
-
-        int texWidth = params.get(0);
-        int texHeight = params.get(1);
-
-        clear(gl);
-        gl.glBegin(GL_QUADS);
-
-//        gl.glTexCoord2d(0, 1);
-        gl.glTexCoord2d(0, 0);
-        gl.glVertex2d(0, 0);
-
-//        gl.glTexCoord2d(0, 0);
-        gl.glTexCoord2d(0, 1);
-        gl.glVertex2d(0, texHeight);
-
-//        gl.glTexCoord2d(1, 0);
-        gl.glTexCoord2d(1, 1);
-        gl.glVertex2d(texWidth, texHeight);
-
-//        gl.glTexCoord2d(1, 1);
-        gl.glTexCoord2d(1, 0);
-        gl.glVertex2d(texWidth, 0);
-
-        gl.glEnd();
-        gl.glFlush();
-
-        gl.glBindTexture(GL_TEXTURE_2D, DEFAULT_TEXTURE);
-    }
-
     @Override
     public boolean isReady() {
         return ready;
@@ -211,4 +189,65 @@ public class AppGLCanvas extends GLCanvas implements GLEventListener, Operatable
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         gl.glEnable(GL_BLEND);
     }
+
+//    protected void initTransformators(GL2 gl, int width, int height) {
+//        transformators = new GLTransformator[]{
+//            new Rotate90CWGLTransform(gl, width, height, framebufferProcessor, textureProcessor, imageProcessor)
+//        };
+//    }
+//
+//    private void performTransformations(GL2 gl) {
+//        initTransformators(gl, transformImage.getWidth(), transformImage.getHeight());
+//        imageTransformations = new byte[transformators.length][];
+//        int textureId = textureProcessor
+//            .createTextureFromByteArray(gl, transformImage.getWidth(), transformImage.getHeight(),
+//                transformImage.getBlueChannel());
+//
+//        for(int i = 0; i < transformators.length; i++) {
+//            imageTransformations[i] = transformators[i].transform(gl, textureId);
+//        }
+//
+//        gl.glDeleteTextures(1, new int[]{textureId}, 0);
+//    }
+
+//    public byte[][] transform(Image img) {
+//        transformImage = img;
+//
+//        action = CANCAS_TRANSFORM;
+//        display();
+//
+//        transformImage = null;
+//
+//        byte[][] transformations = imageTransformations;
+//        imageTransformations = null;
+//
+//        return transformations;
+//    }
+//
+//    private void transformTest() {
+//        ImageProcessor proc = ImageProcessorProvider.getImageProcessor();
+//        Image img;
+//        try {
+//            img = proc.loadImageFromFile("src/test/resources/" + "lenna.png");
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//        Image grayImg = proc.toGrayscale(img);
+//        byte[][] transforms = transform(grayImg);
+//
+//        int[] color = new int[transforms[0].length];
+//
+//        for(int i = 0; i < transforms[0].length; i++) {
+//            color[i] = transforms[0][i];
+//        }
+//
+//        Image out = new Image(color, grayImg.getWidth(), grayImg.getHeight());
+//
+//        try {
+//            proc.writeImageToFile(out, "/home/valentine/tttest.png");
+//        } catch(IOException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//    }
 }

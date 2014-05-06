@@ -1,9 +1,9 @@
 package paramonov.valentin.fiction.gui.canvas;
 
 import com.jogamp.common.nio.Buffers;
-import paramonov.valentin.fiction.gui.gl.processor.GLFramebufferProcessor;
-import paramonov.valentin.fiction.gui.gl.processor.GLTextureProcessor;
-import paramonov.valentin.fiction.gui.gl.processor.InvalidBufferSizeException;
+import paramonov.valentin.fiction.gl.processor.GLFramebufferProcessor;
+import paramonov.valentin.fiction.gl.processor.GLTextureProcessor;
+import paramonov.valentin.fiction.gl.processor.InvalidBufferSizeException;
 
 import javax.media.opengl.GL2;
 import java.nio.ByteBuffer;
@@ -19,7 +19,7 @@ public class CanvasGLFramebufferProcessor implements GLFramebufferProcessor {
 
     @Override
     public int createRGBAFramebuffer(GL2 gl, int w, int h, ByteBuffer buffer) throws InvalidBufferSizeException {
-        if(buffer.array().length != w * h * 4) {
+        if(buffer.capacity() != w * h * 4) {
             throw new InvalidBufferSizeException();
         }
 
@@ -43,42 +43,8 @@ public class CanvasGLFramebufferProcessor implements GLFramebufferProcessor {
     }
 
     @Override
-    public int createGreyFramebuffer(GL2 gl, int w, int h, ByteBuffer buffer) throws InvalidBufferSizeException {
-        if(buffer.array().length != w * h) {
-            throw new InvalidBufferSizeException();
-        }
-
-        int oldTextureId = textureProcessor.getCurrentTextureId(gl);
-        int oldFramebufferId = getCurrentFramebufferId(gl);
-        final int id = genFramebufferId(gl);
-
-        int backingTexture = textureProcessor.createTexture(gl);
-
-        gl.glBindTexture(GL_TEXTURE_2D, backingTexture);
-        gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_R, w, h, 0, GL_R, GL_UNSIGNED_BYTE, buffer);
-        gl.glBindTexture(GL_TEXTURE_2D, oldTextureId);
-
-        gl.glBindFramebuffer(GL_FRAMEBUFFER, id);
-        gl.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, backingTexture, 0);
-        gl.glBindFramebuffer(GL_FRAMEBUFFER, oldFramebufferId);
-
-        return id;
-    }
-
-    @Override
     public int createRGBAFramebuffer(GL2 gl, int w, int h) {
         ByteBuffer buffer = Buffers.newDirectByteBuffer(w * h * 4);
-        try {
-            return createRGBAFramebuffer(gl, w, h, buffer);
-        } catch(InvalidBufferSizeException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    @Override
-    public int createGreyFramebuffer(GL2 gl, int w, int h) {
-        ByteBuffer buffer = Buffers.newDirectByteBuffer(w * h);
         try {
             return createRGBAFramebuffer(gl, w, h, buffer);
         } catch(InvalidBufferSizeException e) {
@@ -103,5 +69,26 @@ public class CanvasGLFramebufferProcessor implements GLFramebufferProcessor {
         gl.glGenFramebuffers(1, id, 0);
 
         return id[0];
+    }
+
+    @Override
+    public byte[] getFramebufferContentsRGBA(GL2 gl, int framebufferId, int width, int height) {
+        int oldFramebuffer = getCurrentFramebufferId(gl);
+        ByteBuffer byteBuffer;
+
+        gl.glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+        gl.glReadBuffer(GL_FRONT);
+
+        byteBuffer = Buffers.newDirectByteBuffer(
+            width * height * 4
+        );
+        gl.glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        gl.glReadPixels(
+            0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer
+        );
+
+        gl.glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
+
+        return byteBuffer.array();
     }
 }

@@ -27,15 +27,17 @@ public class ImageProcessor {
         int h = img.getHeight();
 
         if(outputFileName.endsWith(".png")) {
-            writeImageToPngFile(img, outputFileName, w, h);
+            writeImageToPngFile(img, outputFileName);
         } else if(outputFileName.endsWith(".dat")) {
             writeImageToDatFile(img, outputFileName, w, h);
         } else {
-            writeImageToPngFile(img, outputFileName + ".png", w, h);
+            writeImageToPngFile(img, outputFileName + ".png");
         }
     }
 
-    void writeImageToPngFile(Image img, String outputFileName, int width, int height) throws IOException {
+    void writeImageToPngFile(Image img, String outputFileName) throws IOException {
+        final int width = img.getWidth();
+        final int height = img.getHeight();
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         buffImg.setRGB(0, 0, width, height, img.getARGB(), 0, width);
@@ -107,10 +109,7 @@ public class ImageProcessor {
             mse += diffR * diffR + diffG * diffG + diffB * diffB;
         }
 
-        if(mse == 0) return 0.;
-
         mse /= 3 * originalRGB.length;
-        //double psnr = 20 * Math.log10(255 * 255) - 10 * Math.log10(mse);
         double psnr = 10 * Math.log10((255 * 255) / mse);
 
         return psnr;
