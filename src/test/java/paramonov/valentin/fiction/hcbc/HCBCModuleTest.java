@@ -7,17 +7,25 @@ import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
 import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
+import java.io.File;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HCBCModuleTest {
-    private ImageProcessor processor;
     private static final String RESOURCE_PATH = "src/test/resources/";
     private static final String TEST_IMG = RESOURCE_PATH + "test image.png";
+    private static final String TEST_OUTPUT_PATH = "target/test/out/";
+    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_PATH);
+
+    private ImageProcessor processor;
     private HCBCModule hcbc;
 
     @Before
     public void setUp() {
+        if(!TEST_OUTPUT_DIR.exists()) {
+            TEST_OUTPUT_DIR.mkdirs();
+        }
         processor = ImageProcessorProvider.getImageProcessor();
         hcbc = new HCBCModule();
     }
@@ -61,7 +69,7 @@ public class HCBCModuleTest {
 
         hcbc.calculateTC(colorImage, true);
 
-        processor.writeImageToFile(colorImage, RESOURCE_PATH + "gray.png");
+        processor.writeImageToFile(colorImage, TEST_OUTPUT_PATH + "gray.png");
     }
 
     @Test
@@ -77,7 +85,7 @@ public class HCBCModuleTest {
 
         Image encodedImage = encodeData.getSnd();
 
-        processor.writeImageToFile(encodedImage, RESOURCE_PATH + "encoded.png");
+        processor.writeImageToFile(encodedImage, TEST_OUTPUT_PATH + "encoded.png");
     }
 
     @Test
@@ -88,6 +96,6 @@ public class HCBCModuleTest {
 
         Image decodedImage = hcbc.hcbcDecode(encodeData.getFst(), encodeData.getSnd());
 
-        processor.writeImageToFile(decodedImage, RESOURCE_PATH + "decoded.png");
+        processor.writeImageToFile(decodedImage, TEST_OUTPUT_PATH + "decoded.png");
     }
 }
