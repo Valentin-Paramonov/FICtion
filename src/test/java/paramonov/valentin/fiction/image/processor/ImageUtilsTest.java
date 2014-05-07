@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThat;
 public class ImageUtilsTest {
     private ImageProcessor processor;
     private static final String RESOURCE_PATH = "src/test/resources/";
-    private static final String TEST_IMG = RESOURCE_PATH + "lenna.png";
+    private static final String TEST_IMG = RESOURCE_PATH + "lenna rect.png";
     private static final int[] COLORS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     private static final int IMG_WIDTH = 3;
     private static final int IMG_HEIGHT = 3;
@@ -234,7 +234,7 @@ public class ImageUtilsTest {
         final Image image = processor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
-        final Image outImage = new Image(width, height);
+        final Image outImage = new Image(height, width);
 
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
@@ -270,12 +270,12 @@ public class ImageUtilsTest {
         final Image image = processor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
-        final Image outImage = new Image(width, height);
+        final Image outImage = new Image(height, width);
 
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
                 final int color = image.getColor(i, j);
-                outImage.setColor(width - 1 - j, width - 1 - i, color);
+                outImage.setColor(height - 1 - j, width - 1 - i, color);
             }
         }
 
