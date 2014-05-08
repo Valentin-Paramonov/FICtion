@@ -208,7 +208,7 @@ public class TransformationTest {
 
         for(int j = 0; j < IMG_HEIGHT; j++) {
             for(int i = 0; i < IMG_WIDTH; i++) {
-                colorSequence.add(testImage.getColor(IMG_WIDTH - 1 - j, IMG_WIDTH - 1 - i));
+                colorSequence.add(testImage.getColor(IMG_HEIGHT - 1 - j, IMG_WIDTH - 1 - i));
             }
         }
 

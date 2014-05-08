@@ -1,11 +1,12 @@
 package paramonov.valentin.fiction.image.processor;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.Image;
+import paramonov.valentin.fiction.transformation.Transformation;
 
 import java.io.File;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -31,9 +32,10 @@ public class ImageUtilsTest {
         Image one = new Image(colors, 2, 2);
         Image two = new Image(colors, 2, 2);
 
-        final double rms = ImageUtils.compareIdenticalGrayscale(one, two);
+        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(one, two);
+        final Double rmsIdentity = rmsMap.get(Transformation.IDENTITY);
 
-        assertThat(rms, equalTo(0.));
+        assertThat(rmsIdentity, equalTo(0.));
     }
 
     @Test
@@ -43,9 +45,10 @@ public class ImageUtilsTest {
         Image one = new Image(colorsOne, 2, 2);
         Image two = new Image(colorsTwo, 2, 2);
 
-        final double rms = ImageUtils.compareIdenticalGrayscale(one, two);
+        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(one, two);
+        final Double rmsIdentity = rmsMap.get(Transformation.IDENTITY);
 
-        assertThat(rms, equalTo(1.));
+        assertThat(rmsIdentity, equalTo(1.));
     }
 
     @Test
