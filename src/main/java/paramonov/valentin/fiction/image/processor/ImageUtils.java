@@ -35,8 +35,8 @@ public class ImageUtils {
         return rmsMap;
     }
 
-    private static void addDiff(Transformation[] transformations, double[] diffs,
-        Image datImage, int width, int height, int color, int i, int j) {
+    private static void addDiff(Transformation[] transformations, double[] diffs, Image datImage, int width, int height,
+        int color, int i, int j) {
 
         for(int t = 0; t < transformations.length; t++) {
             final int datColor;
@@ -62,11 +62,11 @@ public class ImageUtils {
                     break;
 
                 case ROTATION_90CW:
-                    datColor = datImage.getColor(j, width - 1 - i) & 0xff;
+                    datColor = datImage.getColor(height - j - 1, i) & 0xff;
                     break;
 
                 case ROTATION_90CCW:
-                    datColor = datImage.getColor(height - j - 1, i) & 0xff;
+                    datColor = datImage.getColor(j, width - 1 - i) & 0xff;
                     break;
 
                 case ROTATION_180:
