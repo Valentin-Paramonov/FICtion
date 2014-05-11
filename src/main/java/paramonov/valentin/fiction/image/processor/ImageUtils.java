@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ImageUtils {
-    public static Map<Transformation, Double> computeDifferencesRms(Image dis, Image dat) {
+    public static Map<Transformation, double[]> computeDifferencesRms(Image dis, Image dat) {
         final int width = dis.getWidth();
         final int height = dis.getHeight();
         if(width != dat.getWidth() || height != dat.getHeight()) {
@@ -16,9 +16,9 @@ public class ImageUtils {
 
         final Transformation[] transformations = Transformation.values();
         final int transformationCount = transformations.length;
-        final HashMap<Transformation, Double> rmsMap = new HashMap<>(transformationCount);
-        final double[] diffs = new double[transformationCount];
-        final double diffCount = width * height;
+        final HashMap<Transformation, double[]> rmsMap = new HashMap<>(transformationCount);
+        final double[][] diffs = new double[transformationCount][5];
+        final double n = width * height;
 
         for(int j = 0; j < height; j++) {
             for(int i = 0; i < width; i++) {
@@ -28,15 +28,25 @@ public class ImageUtils {
         }
 
         for(int i = 0; i < transformationCount; i++) {
-            final double rms = Math.sqrt(diffs[i] / diffCount);
-            rmsMap.put(transformations[i], rms);
+            final double aSum = diffs[i][0];
+            final double bSum = diffs[i][1];
+            final double a2Sum = diffs[i][2];
+            final double b2Sum = diffs[i][3];
+            final double abSum = diffs[i][4];
+
+            final double s = (n * abSum - aSum * bSum) / (n * a2Sum - aSum * aSum);
+            final double o = (bSum - s * aSum) / n;
+            final double rms =
+                Math.sqrt(1 / n * (b2Sum + s * (s * a2Sum - 2 * abSum + 2 * o * aSum) + o * (n * o - 2 * bSum)));
+
+            rmsMap.put(transformations[i], new double[]{o, s, rms});
         }
 
         return rmsMap;
     }
 
-    private static void addDiff(Transformation[] transformations, double[] diffs, Image datImage, int width, int height,
-        int color, int i, int j) {
+    private static void addDiff(Transformation[] transformations, double[][] diffs, Image datImage, int width,
+        int height, int color, int i, int j) {
 
         for(int t = 0; t < transformations.length; t++) {
             final int datColor;
@@ -77,8 +87,11 @@ public class ImageUtils {
                     throw new IllegalArgumentException("Unknown transformation: " + transformations[t]);
             }
 
-            final int diff = color - datColor;
-            diffs[t] += diff * diff;
+            diffs[t][0] += color;
+            diffs[t][1] += datColor;
+            diffs[t][2] += color * color;
+            diffs[t][3] += datColor * datColor;
+            diffs[t][4] += color * datColor;
         }
     }
 

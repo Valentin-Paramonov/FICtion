@@ -6,6 +6,7 @@ import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.transformation.Transformation;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -33,8 +34,8 @@ public class ImageUtilsTest {
     public void testComputeDifferencesRms_SameImageRMSIsZero() {
         Image transformationImage = new Image(COLORS, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.IDENTITY);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.IDENTITY)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -44,10 +45,12 @@ public class ImageUtilsTest {
         final int[] colors = {2, 1, 4, 3};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.IDENTITY);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.IDENTITY)[2];
+        final BigDecimal result = new BigDecimal(rmsIdentity).setScale(10, BigDecimal.ROUND_HALF_EVEN);
+        final BigDecimal expectedResult = new BigDecimal(Math.sqrt(.8)).setScale(10, BigDecimal.ROUND_HALF_EVEN);
 
-        assertThat(rmsIdentity, equalTo(1.));
+        assertThat(result, equalTo(expectedResult));
     }
 
     @Test
@@ -55,8 +58,8 @@ public class ImageUtilsTest {
         final int[] colors = {3, 4, 1, 2};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.REFLECTION_HORIZONTAL);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.REFLECTION_HORIZONTAL)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -66,8 +69,8 @@ public class ImageUtilsTest {
         final int[] colors = {2, 1, 4, 3};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.REFLECTION_VERTICAL);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.REFLECTION_VERTICAL)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -77,8 +80,8 @@ public class ImageUtilsTest {
         final int[] colors = {1, 3, 2, 4};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.REFLECTION_DIAGONAL);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.REFLECTION_DIAGONAL)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -88,8 +91,8 @@ public class ImageUtilsTest {
         final int[] colors = {4, 2, 3, 1};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.REFLECTION_NEGATIVE_DIAGONAL);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.REFLECTION_NEGATIVE_DIAGONAL)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -99,8 +102,8 @@ public class ImageUtilsTest {
         final int[] colors = {3, 1, 4, 2};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.ROTATION_90CW);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.ROTATION_90CW)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -110,8 +113,8 @@ public class ImageUtilsTest {
         final int[] colors = {2, 4, 1, 3};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.ROTATION_90CCW);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.ROTATION_90CCW)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }
@@ -121,8 +124,8 @@ public class ImageUtilsTest {
         final int[] colors = {4, 3, 2, 1};
         Image transformationImage = new Image(colors, 2, 2);
 
-        final Map<Transformation, Double> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
-        final Double rmsIdentity = rmsMap.get(Transformation.ROTATION_180);
+        final Map<Transformation, double[]> rmsMap = ImageUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
+        final double rmsIdentity = rmsMap.get(Transformation.ROTATION_180)[2];
 
         assertThat(rmsIdentity, equalTo(0.));
     }

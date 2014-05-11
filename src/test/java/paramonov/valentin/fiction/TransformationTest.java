@@ -4,7 +4,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
@@ -31,12 +30,18 @@ public class TransformationTest {
     private static final Matcher<List<Integer>> listMatches(final Object... list) {
         return new BaseMatcher<List<Integer>>() {
             @Override
+            @SuppressWarnings("unchecked")
             public boolean matches(Object o) {
                 if(!(o instanceof List)) {
                     return false;
                 }
 
-                List<Object> matchList = (List<Object>) o;
+                final List<Object> matchList;
+                if(o instanceof List) {
+                    matchList = (List<Object>) o;
+                } else {
+                    throw new IllegalArgumentException("List expected");
+                }
 
                 if(list.length != matchList.size()) {
                     return false;
@@ -77,7 +82,6 @@ public class TransformationTest {
         processor = ImageProcessorProvider.getImageProcessor();
         testImage = new Image(COLORS, IMG_WIDTH, IMG_HEIGHT);
     }
-
 
     @Test
     public void testTransformation_Identical() {
