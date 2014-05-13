@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static paramonov.valentin.fiction.ListMatcher.listMatches;
 
 public class ImageTest {
     private Image img;
@@ -91,5 +92,33 @@ public class ImageTest {
         }
 
         assertThat(colorList, hasItems(1, 2, 3, 4, 7, 6));
+    }
+
+    @Test
+    public void testSubImage_SquareImage() {
+        int[] colors = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        final Image testImage = new Image(colors, 3, 3);
+        final Image subImage = testImage.subImage(1, 1, 2, 2);
+        final int[] subColors = subImage.getARGB();
+        final ArrayList<Integer> colorList = new ArrayList<>(9);
+        for(int color : subColors) {
+            colorList.add(color);
+        }
+
+        assertThat(colorList, listMatches(5, 6, 8, 9));
+    }
+
+    @Test
+    public void testSubImage_RectangleImage() {
+        int[] colors = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        final Image testImage = new Image(colors, 4, 3);
+        final Image subImage = testImage.subImage(2, 1, 2, 2);
+        final int[] subColors = subImage.getARGB();
+        final ArrayList<Integer> colorList = new ArrayList<>(9);
+        for(int color : subColors) {
+            colorList.add(color);
+        }
+
+        assertThat(colorList, listMatches(7, 8, 11, 12));
     }
 }

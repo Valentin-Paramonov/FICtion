@@ -1,7 +1,5 @@
 package paramonov.valentin.fiction.fic;
 
-import paramonov.valentin.fiction.image.processor.ImageUtils;
-
 import java.util.concurrent.RecursiveAction;
 
 public class FICPartition extends RecursiveAction {
@@ -9,6 +7,7 @@ public class FICPartition extends RecursiveAction {
     private final int minSubdivisions;
     private final int maxSubdivisions;
     private final double tolerance;
+    private final int domainStep;
     private final int startX;
     private final int startY;
     private final int w;
@@ -16,12 +15,13 @@ public class FICPartition extends RecursiveAction {
 
     private int currentSubdivision;
 
-    public FICPartition(FICTree tree, int minSubdivisions, int maxSubdivisions, double tolerance, int startX,
-        int startY, int w, int h, int currentSubdivision) {
+    public FICPartition(FICTree tree, int minSubdivisions, int maxSubdivisions, double tolerance, int domainStep,
+        int startX, int startY, int w, int h, int currentSubdivision) {
         this.tree = tree;
         this.minSubdivisions = minSubdivisions;
         this.maxSubdivisions = maxSubdivisions;
         this.tolerance = tolerance;
+        this.domainStep = domainStep;
         this.startX = startX;
         this.startY = startY;
         this.w = w;
@@ -43,17 +43,17 @@ public class FICPartition extends RecursiveAction {
         final int block4Height = h / 2;
 
         final FICPartition partition1 =
-            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, startX, startY, block1Width,
+            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX, startY, block1Width,
                 block1Height, currentSubdivision);
         final FICPartition partition2 =
-            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, startX + block4Width, startY,
-                block4Width, block1Height, currentSubdivision);
+            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX + block4Width,
+                startY, block4Width, block1Height, currentSubdivision);
         final FICPartition partition3 =
-            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, startX + block1Width,
+            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX + block1Width,
                 startY + block1Height, block4Width, block4Height, currentSubdivision);
         final FICPartition partition4 =
-            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, startX, startY + block1Height,
-                block1Width, block4Height, currentSubdivision);
+            new FICPartition(tree, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX,
+                startY + block1Height, block1Width, block4Height, currentSubdivision);
 
         invokeAll(partition1, partition2, partition3, partition4);
     }

@@ -39,11 +39,11 @@ public class Image {
 
     public IntBuffer getBuffer() {
         return IntBuffer.wrap(argb);
-//        IntBuffer buff = IntBuffer.wrap(argb);
-//
-////        buff.flip();
-//
-//        return buff;
+        //        IntBuffer buff = IntBuffer.wrap(argb);
+        //
+        ////        buff.flip();
+        //
+        //        return buff;
     }
 
     public byte[] getRedChannel() {
@@ -103,5 +103,19 @@ public class Image {
         }
 
         return new Image(argbCopy, w, h);
+    }
+
+    public Image subImage(int startX, int startY, int width, int height) {
+        final int[] subColors = new int[width * height];
+        int subIndex = 0;
+        for(int y = startY; y < startY + height; y++) {
+            final int offset = w * y + startX;
+            for(int x = offset; x < offset + width; x++) {
+                final int color = argb[x];
+                subColors[subIndex++] = color;
+            }
+        }
+
+        return new Image(subColors, width, height);
     }
 }
