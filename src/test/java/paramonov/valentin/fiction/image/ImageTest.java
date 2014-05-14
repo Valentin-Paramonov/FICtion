@@ -112,13 +112,13 @@ public class ImageTest {
     public void testSubImage_RectangleImage() {
         int[] colors = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         final Image testImage = new Image(colors, 4, 3);
-        final Image subImage = testImage.subImage(2, 1, 2, 2);
+        final Image subImage = testImage.subImage(2, 1, 1, 1);
         final int[] subColors = subImage.getARGB();
         final ArrayList<Integer> colorList = new ArrayList<>(9);
         for(int color : subColors) {
             colorList.add(color);
         }
 
-        assertThat(colorList, listMatches(7, 8, 11, 12));
+        assertThat(colorList, listMatches(7));
     }
 }
