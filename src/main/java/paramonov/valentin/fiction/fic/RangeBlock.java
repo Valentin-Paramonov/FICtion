@@ -1,43 +1,40 @@
 package paramonov.valentin.fiction.fic;
 
 public class RangeBlock {
-    private final float contrast;
-    private final int brightness;
-    private final int domainX;
-    private final int domainY;
-    private final int domainW;
-    private final byte transformation;
+    private final int x;
+    private final int y;
+    private final int w;
+    private final int h;
+    private DomainParams mappingDomain;
 
-    public RangeBlock(float contrast, int brightness, int domainX, int domainY, int domainW, byte transformation) {
-        this.contrast = contrast;
-        this.brightness = brightness;
-        this.domainX = domainX;
-        this.domainY = domainY;
-        this.domainW = domainW;
-        this.transformation = transformation;
+    public RangeBlock(int x, int y, int w, int h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
     }
 
-    public float getContrast() {
-        return contrast;
+    public int getX() {
+        return x;
     }
 
-    public int getBrightness() {
-        return brightness;
+    public int getY() {
+        return y;
     }
 
-    public int getDomainX() {
-        return domainX;
+    public int getW() {
+        return w;
     }
 
-    public int getDomainY() {
-        return domainY;
+    public int getH() {
+        return h;
     }
 
-    public int getDomainW() {
-        return domainW;
+    public DomainParams getMappingDomain() {
+        return mappingDomain;
     }
 
-    public byte getTransformation() {
-        return transformation;
+    public void setMappingDomain(DomainParams mappingDomain) {
+        this.mappingDomain = mappingDomain;
     }
 }
