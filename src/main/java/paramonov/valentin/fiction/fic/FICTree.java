@@ -10,12 +10,8 @@ public class FICTree extends QuadTree<RangeBlock> implements Iterable<RangeBlock
 
     public FICTree() {}
 
-    public FICTree(RangeBlock rangeBlock) {
-        this.element = rangeBlock;
-        init();
-    }
-
-    private void init() {
+    protected void init() {
+        RangeBlock element = getElement();
         final int x = element.getX();
         final int y = element.getY();
         final int w = element.getW();
@@ -30,28 +26,7 @@ public class FICTree extends QuadTree<RangeBlock> implements Iterable<RangeBlock
     }
 
     @Override
-    public boolean add(RangeBlock rangeBlock) {
-        if(element == null) {
-            element = rangeBlock;
-            init();
-            size++;
-            return true;
-        }
-
-        if(children == null) {
-            children = new FICTree[4];
-        }
-
-        final int place = findPlace(rangeBlock);
-        if(children[place] == null) {
-            children[place] = new FICTree(rangeBlock);
-            return true;
-        }
-
-        return children[place].add(rangeBlock);
-    }
-
-    int findPlace(RangeBlock rangeBlock) {
+    protected int findPlace(RangeBlock rangeBlock) {
         if(elementDoesNotFit(rangeBlock)) {
             return -1;
         }
@@ -63,6 +38,7 @@ public class FICTree extends QuadTree<RangeBlock> implements Iterable<RangeBlock
     }
 
     private boolean elementDoesNotFit(RangeBlock rangeBlock) {
+        RangeBlock element = getElement();
         final int rangeX = rangeBlock.getX();
         final int rangeY = rangeBlock.getY();
         final int rangeW = rangeBlock.getW();

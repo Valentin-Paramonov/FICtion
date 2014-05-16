@@ -1,7 +1,9 @@
-package paramonov.valentin.fiction.hcbc;
+package paramonov.valentin.fiction.collections;
 
 import org.junit.Before;
 import org.junit.Test;
+import paramonov.valentin.fiction.hcbc.HCBCBlock;
+import paramonov.valentin.fiction.hcbc.HCBCTree;
 
 import java.util.Iterator;
 
@@ -10,7 +12,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class HCBCIteratorTest {
+public class QuadTreeIteratorTest {
     private HCBCTree squareTree;
     private HCBCTree rectTree;
 

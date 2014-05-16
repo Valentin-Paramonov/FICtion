@@ -1,21 +1,27 @@
-package paramonov.valentin.fiction.hcbc;
+package paramonov.valentin.fiction.collections;
+
+import paramonov.valentin.fiction.collections.QuadTree;
+import paramonov.valentin.fiction.hcbc.HCBCTree;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-class HCBCIterator implements Iterator<HCBCBlock> {
-    private Iterator<HCBCBlock> iterator;
+final class QuadTreeIterator<T> implements Iterator<T> {
+    private final QuadTree<T> tree;
+    private Iterator<T> iterator;
 
-    HCBCIterator(HCBCTree tree) {
-        init(tree);
+    QuadTreeIterator(QuadTree<T> tree) {
+        this.tree = tree;
+        init();
     }
 
-    private void init(HCBCTree tree) {
-        List<HCBCBlock> blockList = new ArrayList<>(tree.size());
+    private void init() {
+        int treeSize = tree.size();
+        List<T> blockList = new ArrayList<>(treeSize);
 
-        if(tree.size() != 0) {
+        if (treeSize != 0) {
             treeToArray(tree, blockList);
         }
 
@@ -28,7 +34,7 @@ class HCBCIterator implements Iterator<HCBCBlock> {
     }
 
     @Override
-    public HCBCBlock next() throws NoSuchElementException {
+    public T next() throws NoSuchElementException {
         return iterator.next();
     }
 
@@ -37,13 +43,13 @@ class HCBCIterator implements Iterator<HCBCBlock> {
         throw new UnsupportedOperationException();
     }
 
-    private void treeToArray(HCBCTree tree, List<HCBCBlock> blocks) {
-        if(!tree.hasChildren()) {
+    private void treeToArray(QuadTree<T> tree, List<T> blocks) {
+        if (!tree.hasChildren()) {
             blocks.add(tree.getElement());
             return;
         }
 
-        HCBCTree[] children = (HCBCTree[]) tree.getChildren();
+        QuadTree<T>[] children = tree.getChildren();
 
         treeToArray(children[0], blocks);
         treeToArray(children[1], blocks);

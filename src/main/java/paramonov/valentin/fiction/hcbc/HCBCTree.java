@@ -4,81 +4,58 @@ import paramonov.valentin.fiction.collections.QuadTree;
 
 import java.util.Iterator;
 
-public class HCBCTree extends QuadTree<HCBCBlock> implements Iterable<HCBCBlock> {
+public class HCBCTree extends QuadTree<HCBCBlock> {
     public HCBCTree() {}
 
-    protected HCBCTree(HCBCBlock block) {
-        element = block;
+    @Override
+    protected void init() {
+
     }
 
     @Override
-    public boolean add(HCBCBlock block) {
-        if(element == null) {
-            element = block;
-            size++;
-            return true;
-        }
-
-        int placeForChild = findPlace(block);
-
-        if(placeForChild == -1) return false;
-
-        if(children == null) {
-            size--;
-            children = new HCBCTree[4];
-        }
-
-        if(children[placeForChild] == null) {
-            children[placeForChild] = new HCBCTree(block);
-            size++;
-            return true;
-        }
-
-        return children[placeForChild].add(block);
-    }
-
     protected int findPlace(HCBCBlock block) {
+        HCBCBlock element = getElement();
         int horizontalQuad = quad(
-            element.getX(), element.getWidth(),
-            block.getX(), block.getWidth());
+                element.getX(), element.getWidth(),
+                block.getX(), block.getWidth());
 
-        if(horizontalQuad < 0) return -1;
+        if (horizontalQuad < 0) return -1;
 
         int verticalQuad = quad(
-            element.getY(), element.getHeight(),
-            block.getY(), block.getHeight());
+                element.getY(), element.getHeight(),
+                block.getY(), block.getHeight());
 
-        if(verticalQuad < 0) return -1;
+        if (verticalQuad < 0) return -1;
 
         return horizontalQuad + 2 * verticalQuad;
     }
 
-    protected int quad(
-        int regionStart, int regionSize,
-        int blockStart, int blockSize) {
+    int quad(
+            int regionStart, int regionSize,
+            int blockStart, int blockSize) {
 
         int halfSize = (regionSize + 1) / 2;
         int regionMid = regionStart + halfSize;
         int regionEnd = regionStart + regionSize;
 
-        if(belongs(regionStart, regionMid, blockStart)) {
-            if(blockSize > halfSize) return -1;
+        if (belongs(regionStart, regionMid, blockStart)) {
+            if (blockSize > halfSize) return -1;
             return 0;
-        } else if(belongs(regionMid, regionEnd, blockStart)) {
-            if(blockSize > regionSize / 2) return -1;
+        } else if (belongs(regionMid, regionEnd, blockStart)) {
+            if (blockSize > regionSize / 2) return -1;
             return 1;
         }
 
         return -1;
     }
 
-    protected boolean belongs(int regionStart, int regionEnd, int coord) {
+    boolean belongs(int regionStart, int regionEnd, int coord) {
         return coord >= regionStart && coord < regionEnd;
     }
 
     @Override
     public Iterator<HCBCBlock> iterator() {
-        return new HCBCIterator(this);
+        return super.iterator();
     }
 
     @Override
@@ -97,10 +74,12 @@ public class HCBCTree extends QuadTree<HCBCBlock> implements Iterable<HCBCBlock>
     }
 
     public int getBlockWidth() {
+        HCBCBlock element = getElement();
         return element.getWidth();
     }
 
     public int getBlockHeight() {
+        HCBCBlock element = getElement();
         return element.getHeight();
     }
 }
