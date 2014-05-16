@@ -23,7 +23,7 @@ public class FICModuleTest {
     }
 
     @Test
-    public void testEncode() {
+    public void testEncode_ShouldNotFail() {
         final int[] colorArray = {1, 2, 3, 4};
         final Image image = new Image(colorArray, 2, 2);
 
