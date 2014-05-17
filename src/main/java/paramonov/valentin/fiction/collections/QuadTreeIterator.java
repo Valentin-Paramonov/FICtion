@@ -1,8 +1,5 @@
 package paramonov.valentin.fiction.collections;
 
-import paramonov.valentin.fiction.collections.QuadTree;
-import paramonov.valentin.fiction.hcbc.HCBCTree;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +18,7 @@ final class QuadTreeIterator<T> implements Iterator<T> {
         int treeSize = tree.size();
         List<T> blockList = new ArrayList<>(treeSize);
 
-        if (treeSize != 0) {
+        if(treeSize != 0) {
             treeToArray(tree, blockList);
         }
 
@@ -44,16 +41,13 @@ final class QuadTreeIterator<T> implements Iterator<T> {
     }
 
     private void treeToArray(QuadTree<T> tree, List<T> blocks) {
-        if (!tree.hasChildren()) {
-            blocks.add(tree.getElement());
+        blocks.add(tree.getElement());
+        if(!tree.hasChildren()) {
             return;
         }
 
-        QuadTree<T>[] children = tree.getChildren();
-
-        treeToArray(children[0], blocks);
-        treeToArray(children[1], blocks);
-        treeToArray(children[2], blocks);
-        treeToArray(children[3], blocks);
+        for(QuadTree<T> child : tree.getChildren()) {
+            treeToArray(child, blocks);
+        }
     }
 }

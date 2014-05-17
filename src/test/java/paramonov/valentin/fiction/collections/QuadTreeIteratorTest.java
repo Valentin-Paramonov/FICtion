@@ -60,11 +60,23 @@ public class QuadTreeIteratorTest {
     }
 
     @Test
-    public void testNext_SequenceInRightOrder_SquareTree() {
-        double value = 1;
+    public void testSize_SquareTree_Equals4() {
+        final int squareTreeSize = squareTree.size();
 
-        assertThat(squareTree.size(), equalTo(4));
+        assertThat(squareTreeSize, equalTo(4));
+    }
 
+    @Test
+    public void testSize_RectTree_Equals4() {
+        final int rectTreeSize = rectTree.size();
+
+        assertThat(rectTreeSize, equalTo(4));
+    }
+
+    @Test
+    public void testNext_SquareTree_SequenceInRightOrder() {
+        double value = 0;
+        ;
         for(HCBCBlock block : squareTree) {
             assertThat(block.getMtcR(), equalTo(value));
             value++;
@@ -73,9 +85,7 @@ public class QuadTreeIteratorTest {
 
     @Test
     public void testNext_SequenceInRightOrder_RectTree() {
-        double value = 1;
-
-        assertThat(rectTree.size(), equalTo(4));
+        double value = 0;
 
         for(HCBCBlock block : rectTree) {
             assertThat(block.getMtcR(), equalTo(value));

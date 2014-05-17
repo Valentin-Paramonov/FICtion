@@ -16,12 +16,12 @@ public class BitPacker {
         reset();
     }
 
-    void pack(int data, int size) {
+    BitPacker pack(int data, int size) {
         if(sealed) {
             init();
         }
 
-        data &= (1 << size) - 1;
+        data &= -1 >>> (Integer.SIZE - size);
         final int bufferSpace = leftInBuffer - size;
         if(bufferSpace <= 0) {
             final int abs = Math.abs(bufferSpace);
@@ -34,6 +34,8 @@ public class BitPacker {
             buffer |= data << bufferSpace;
             leftInBuffer -= size;
         }
+
+        return this;
     }
 
     public byte[] seal() {

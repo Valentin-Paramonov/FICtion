@@ -3,8 +3,12 @@ package paramonov.valentin.fiction.io;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static paramonov.valentin.fiction.ListMatcher.listMatches;
 
 public class BitPackerTest {
     private BitPacker packer;
@@ -52,27 +56,29 @@ public class BitPackerTest {
     }
 
     @Test
-    public void testPack_Values_EqualTo0Then4Then0() {
+    public void testPack_PackedSequence_HasExpectedValuesWhenSizeIsLessThanBuffer() {
         packer.pack(1024, 24);
 
         final byte[] bytes = packer.seal();
+        final List<Integer> byteList = new ArrayList<>(bytes.length);
+        for(byte b : bytes) {
+            byteList.add((int) b);
+        }
 
-        assertThat((int) bytes[0], equalTo(0));
-        assertThat((int) bytes[1], equalTo(4));
-        assertThat((int) bytes[2], equalTo(0));
+        assertThat(byteList, listMatches(0, 4, 0));
     }
 
     @Test
-    public void testPack_Values_EqualTo1Then0Then0Then64Then0() {
+    public void testPack_PackedSequence_HasExpectedValuesWhenSizeIsGreaterThanBuffer() {
         packer.pack(1024, 18);
         packer.pack(1024, 18);
 
         final byte[] bytes = packer.seal();
+        final List<Integer> byteList = new ArrayList<>(bytes.length);
+        for(byte b : bytes) {
+            byteList.add((int) b);
+        }
 
-        assertThat((int) bytes[0], equalTo(1));
-        assertThat((int) bytes[1], equalTo(0));
-        assertThat((int) bytes[2], equalTo(0));
-        assertThat((int) bytes[3], equalTo(64));
-        assertThat((int) bytes[4], equalTo(0));
+        assertThat(byteList, listMatches(1, 0, 0, 64, 0));
     }
 }
