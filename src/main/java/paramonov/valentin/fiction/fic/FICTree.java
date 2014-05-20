@@ -4,7 +4,7 @@ import paramonov.valentin.fiction.collections.QuadTree;
 
 import java.util.Iterator;
 
-public class FICTree extends QuadTree<RangeBlock> implements Iterable<RangeBlock> {
+public class FICTree extends QuadTree<FICTree,RangeBlock> {
     private Quantizer hQuantizer;
     private Quantizer vQuantizer;
 
@@ -18,11 +18,6 @@ public class FICTree extends QuadTree<RangeBlock> implements Iterable<RangeBlock
         final int h = element.getH();
         hQuantizer = new Quantizer(2, x, x + w);
         vQuantizer = new Quantizer(2, y, y + h);
-    }
-
-    @Override
-    public Iterator<RangeBlock> iterator() {
-        return null;
     }
 
     @Override

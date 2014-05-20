@@ -3,67 +3,74 @@ package paramonov.valentin.fiction.collections;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-public abstract class QuadTree<T> implements Iterable<T> {
-    private T element;
-    private QuadTree<T>[] children;
+public abstract class QuadTree<T extends QuadTree<T, E>, E> implements Iterable<T> {
+    private E element;
+    T[] children;
 
     protected abstract void init();
 
-    public boolean add(T t) {
-        if (element == null) {
-            element = t;
+    public boolean add(E element) {
+        if(this.element == null) {
+            this.element = element;
             init();
             return true;
         }
 
-        if (children == null) {
-            children = (QuadTree<T>[]) Array.newInstance(getClass(), 4);
+        if(children == null) {
+            children = (T[]) Array.newInstance(getClass(), 4);
         }
 
-        final int place = findPlace(t);
-        if (place == -1) {
+        final int place = findPlace(element);
+        if(place == -1) {
             return false;
         }
 
-        if (children[place] == null) {
+        if(children[place] == null) {
             try {
-                children[place] = (QuadTree<T>) getClass().newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                children[place] = (T) getClass().newInstance();
+            } catch(InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        return children[place].add(t);
+        return children[place].add(element);
     }
 
-    protected abstract int findPlace(T t);
+    protected abstract int findPlace(E element);
 
-    protected T getElement() {
+    public E getElement() {
         return element;
     }
 
-    protected boolean hasChildren() {
-        if (getChildren() == null) return false;
+    public boolean hasChildren() {
+        if(children == null) {
+            return false;
+        }
 
-        for (Object o : getChildren()) {
-            if (o != null) return true;
+        for(T child : children) {
+            if(child != null) {
+                return true;
+            }
         }
 
         return false;
     }
 
-    protected QuadTree<T>[] getChildren() {
+    public T[] getChildren() {
         return children;
     }
 
     public final int size() {
-        if (!hasChildren()) {
-            return element != null ? 1 : 0;
+        int size = element != null ? 1 : 0;
+
+        if(!hasChildren()) {
+            return size;
         }
 
-        int size = 0;
-        for (QuadTree<T> child : children) {
-            if (child == null) continue;
+        for(T child : children) {
+            if(child == null) {
+                continue;
+            }
             size += child.size();
         }
 
@@ -72,6 +79,6 @@ public abstract class QuadTree<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new QuadTreeIterator<T>(this);
+        return new QuadTreeIterator(this);
     }
 }

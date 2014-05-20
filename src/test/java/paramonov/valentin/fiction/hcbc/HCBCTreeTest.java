@@ -10,12 +10,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HCBCTreeTest {
-    private final HCBCTree oddTree = new HCBCTree();
-    private final HCBCTree evenTree = new HCBCTree();
+    private HCBCTree oddTree;
+    private HCBCTree evenTree;
 
     @Before
     public void setUp() {
+        oddTree = new HCBCTree();
         oddTree.add(new HCBCBlock(0, 0, 5, 5, 0, 0, 0));
+        evenTree = new HCBCTree();
         evenTree.add(new HCBCBlock(0, 0, 6, 6, 0, 0, 0));
     }
 
@@ -182,7 +184,7 @@ public class HCBCTreeTest {
 
         int size = evenTree.size();
 
-        Assert.assertThat(size, equalTo(2));
+        Assert.assertThat(size, equalTo(3));
     }
 
     @Test
@@ -197,6 +199,6 @@ public class HCBCTreeTest {
 
         int treeSize = tree.size();
 
-        Assert.assertThat(treeSize, equalTo(4));
+        Assert.assertThat(treeSize, equalTo(5));
     }
 }

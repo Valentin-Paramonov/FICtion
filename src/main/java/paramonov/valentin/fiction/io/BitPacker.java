@@ -16,7 +16,7 @@ public class BitPacker {
         reset();
     }
 
-    BitPacker pack(int data, int size) {
+    public BitPacker pack(int data, int size) {
         if(sealed) {
             init();
         }

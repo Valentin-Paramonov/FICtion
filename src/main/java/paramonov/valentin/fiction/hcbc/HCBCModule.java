@@ -7,8 +7,7 @@ import paramonov.valentin.fiction.image.Image;
 import java.util.concurrent.ForkJoinPool;
 
 class HCBCModule {
-    public Pair<HCBCTree, Image> hcbcEncode(
-        Image img, double tolerance, int maxLevel) {
+    public Pair<HCBCTree, Image> hcbcEncode(Image img, double tolerance, int maxLevel) {
 
         Image imgCopy = new Image(img.getARGB(), img.getWidth(), img.getHeight());
 
@@ -27,36 +26,44 @@ class HCBCModule {
         int imgW = colorImg.getWidth();
         int[] colors = colorImg.getARGB();
 
-        for(HCBCBlock blk : tree) {
-            int startX = blk.getX();
-            int endX = startX + blk.getWidth();
-            int startY = blk.getY();
-            int endY = startY + blk.getHeight();
-            double mtcRC = blk.getMtcR();
-            double mtcGC = blk.getMtcG();
-            double mtcBC = blk.getMtcB();
-            double mtcSumSqr = (mtcRC * mtcRC) + (mtcGC * mtcGC) + (mtcBC * mtcBC);
-            double mtcR = mtcRC / mtcSumSqr;
-            double mtcG = mtcGC / mtcSumSqr;
-            double mtcB = mtcBC / mtcSumSqr;
-
-            for(int x = startX; x < endX; x++) {
-                for(int y = startY; y < endY; y++) {
-                    int index = y * imgW + x;
-                    int color = colors[index] & 0xff;
-                    int r = (int) Math.round(mtcR * color);
-                    r = r > 0xff ? 0xff : r;
-                    int g = (int) Math.round(mtcG * color);
-                    g = g > 0xff ? 0xff : g;
-                    int b = (int) Math.round(mtcB * color);
-                    b = b > 0xff ? 0xff : b;
-
-                    colors[index] = (colors[index] & 0xff000000) | r << 16 | g << 8 | b;
-                }
+        for(HCBCTree subTree : tree) {
+            if(subTree.hasChildren()) {
+                continue;
             }
+            final HCBCBlock block = subTree.getElement();
+            decodeBlock(block, imgW, colors);
         }
 
         return colorImg;
+    }
+
+    private void decodeBlock(HCBCBlock block, int imageWidth, int[] colors) {
+        int startX = block.getX();
+        int endX = startX + block.getWidth();
+        int startY = block.getY();
+        int endY = startY + block.getHeight();
+        double mtcRC = block.getMtcR();
+        double mtcGC = block.getMtcG();
+        double mtcBC = block.getMtcB();
+        double mtcSumSqr = (mtcRC * mtcRC) + (mtcGC * mtcGC) + (mtcBC * mtcBC);
+        double mtcR = mtcRC / mtcSumSqr;
+        double mtcG = mtcGC / mtcSumSqr;
+        double mtcB = mtcBC / mtcSumSqr;
+
+        for(int x = startX; x < endX; x++) {
+            for(int y = startY; y < endY; y++) {
+                int index = y * imageWidth + x;
+                int color = colors[index] & 0xff;
+                int r = (int) Math.round(mtcR * color);
+                r = r > 0xff ? 0xff : r;
+                int g = (int) Math.round(mtcG * color);
+                g = g > 0xff ? 0xff : g;
+                int b = (int) Math.round(mtcB * color);
+                b = b > 0xff ? 0xff : b;
+
+                colors[index] = (colors[index] & 0xff000000) | r << 16 | g << 8 | b;
+            }
+        }
     }
 
     private boolean dimensionsMatch(HCBCTree tree, Image img) {
@@ -79,7 +86,9 @@ class HCBCModule {
             double b = colors[i] & 0xff;
             double sum = r + g + b;
 
-            if(sum == 0) continue;
+            if(sum == 0) {
+                continue;
+            }
 
             int x = i % w;
             int y = i / w;
@@ -98,7 +107,6 @@ class HCBCModule {
 
         return tc;
     }
-
 
     private HCBCTree qtPartition(Image img, double tolerance, int maxLevel) {
         int w = img.getWidth();

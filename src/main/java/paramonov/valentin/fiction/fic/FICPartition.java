@@ -10,10 +10,7 @@ import java.util.concurrent.RecursiveAction;
 public class FICPartition extends RecursiveAction {
     private final FICTree tree;
     private final Image image;
-    private final int minSubdivisions;
-    private final int maxSubdivisions;
-    private final double tolerance;
-    private final double domainStep;
+    private final FICProperties properties;
     private final int startX;
     private final int startY;
     private final int w;
@@ -21,14 +18,11 @@ public class FICPartition extends RecursiveAction {
 
     private int currentSubdivision;
 
-    public FICPartition(FICTree tree, Image image, int minSubdivisions, int maxSubdivisions, double tolerance,
-        double domainStep, int startX, int startY, int w, int h, int currentSubdivision) {
+    public FICPartition(FICTree tree, Image image, FICProperties properties, int startX, int startY, int w, int h,
+        int currentSubdivision) {
         this.tree = tree;
         this.image = image;
-        this.minSubdivisions = minSubdivisions;
-        this.maxSubdivisions = maxSubdivisions;
-        this.tolerance = tolerance;
-        this.domainStep = domainStep;
+        this.properties = properties;
         this.startX = startX;
         this.startY = startY;
         this.w = w;
@@ -44,6 +38,10 @@ public class FICPartition extends RecursiveAction {
         synchronized(tree) {
             tree.add(rangeBlock);
         }
+
+        final int minSubdivisions = properties.getMinSubdivisions();
+        final int maxSubdivisions = properties.getMaxSubdivisions();
+        final double tolerance = properties.getTolerance();
 
         if(currentSubdivision > minSubdivisions) {
             final DomainParams domainParams = computeCoefficients();
@@ -61,17 +59,16 @@ public class FICPartition extends RecursiveAction {
         final int block4Height = h / 2;
 
         final FICPartition partition1 =
-            new FICPartition(tree, image, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX, startY,
-                block1Width, block1Height, currentSubdivision);
+            new FICPartition(tree, image, properties, startX, startY, block1Width, block1Height, currentSubdivision);
         final FICPartition partition2 =
-            new FICPartition(tree, image, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX + block4Width,
-                startY, block4Width, block1Height, currentSubdivision);
+            new FICPartition(tree, image, properties, startX + block4Width, startY, block4Width, block1Height,
+                currentSubdivision);
         final FICPartition partition3 =
-            new FICPartition(tree, image, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX + block1Width,
-                startY + block1Height, block4Width, block4Height, currentSubdivision);
+            new FICPartition(tree, image, properties, startX + block1Width, startY + block1Height, block4Width,
+                block4Height, currentSubdivision);
         final FICPartition partition4 =
-            new FICPartition(tree, image, minSubdivisions, maxSubdivisions, tolerance, domainStep, startX,
-                startY + block1Height, block1Width, block4Height, currentSubdivision);
+            new FICPartition(tree, image, properties, startX, startY + block1Height, block1Width, block4Height,
+                currentSubdivision);
 
         invokeAll(partition1, partition2, partition3, partition4);
     }
@@ -82,7 +79,7 @@ public class FICPartition extends RecursiveAction {
         final DomainParams bestDomain = new DomainParams();
         final int domainWidth = w * 2;
         final int domainHeight = h * 2;
-        bestDomain.setWidth(domainWidth);
+        final double domainStep = properties.getDomainStep();
 
         final int spacing = (int) Math.round(domainStep * domainWidth);
         for(int y = 0; y < h; y += spacing) {
@@ -96,9 +93,8 @@ public class FICPartition extends RecursiveAction {
                     continue;
                 }
                 minRms = rms;
+                bestDomain.setId(y * w / spacing + x / spacing);
                 bestDomain.setTransformationParams(bestTransformationParameters);
-                bestDomain.setX(x);
-                bestDomain.setY(y);
             }
         }
 

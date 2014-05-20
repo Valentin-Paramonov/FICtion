@@ -11,16 +11,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(MockitoJUnitRunner.class)
 public class QuadTreeTest {
-    private QuadTree[] children = new QuadTree[4];
-
-    @Spy
-    private QuadTree tree = (QuadTree) new HCBCTree();
+    private QuadTree[] children;
+    private QuadTree tree;
 
     @Before
     public void setUp() {
-        doReturn(children).when(tree).getChildren();
+        tree = new HCBCTree();
+        children = new QuadTree[4];
     }
 
     @Test
@@ -32,7 +30,8 @@ public class QuadTreeTest {
 
     @Test
     public void testNoChildren_NonEmptyArray() {
-        children[0] = tree;
+        tree.children = children;
+        children[0] = new HCBCTree();
 
         boolean hasChildren = tree.hasChildren();
 

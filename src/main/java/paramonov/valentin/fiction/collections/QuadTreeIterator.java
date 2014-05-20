@@ -5,24 +5,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-final class QuadTreeIterator<T> implements Iterator<T> {
-    private final QuadTree<T> tree;
+final class QuadTreeIterator<T extends QuadTree<T, V>, V> implements Iterator<T> {
+    private final T tree;
     private Iterator<T> iterator;
 
-    QuadTreeIterator(QuadTree<T> tree) {
+    QuadTreeIterator(T tree) {
         this.tree = tree;
         init();
     }
 
     private void init() {
         int treeSize = tree.size();
-        List<T> blockList = new ArrayList<>(treeSize);
+        List<T> subTrees = new ArrayList<>(treeSize);
 
         if(treeSize != 0) {
-            treeToArray(tree, blockList);
+            treeToArray(tree, subTrees);
         }
 
-        iterator = blockList.iterator();
+        iterator = subTrees.iterator();
     }
 
     @Override
@@ -40,14 +40,14 @@ final class QuadTreeIterator<T> implements Iterator<T> {
         throw new UnsupportedOperationException();
     }
 
-    private void treeToArray(QuadTree<T> tree, List<T> blocks) {
-        blocks.add(tree.getElement());
+    private void treeToArray(T tree, List<T> subTrees) {
+        subTrees.add(tree);
         if(!tree.hasChildren()) {
             return;
         }
 
-        for(QuadTree<T> child : tree.getChildren()) {
-            treeToArray(child, blocks);
+        for(T subTree : tree.getChildren()) {
+            treeToArray(subTree, subTrees);
         }
     }
 }
