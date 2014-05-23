@@ -3,10 +3,10 @@ package paramonov.valentin.fiction.image;
 import org.junit.Before;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
-import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -17,12 +17,11 @@ public class ImageTest {
     private Image img;
     private static final String PATH = "src/test/resources/";
     private static final String TEST_IMG = PATH + "test image.png";
+    private static final String TEST_OUT_PATH = "target/test/out";
 
     @Before
     public void setUp() throws Exception {
-        ImageProcessor processor = ImageProcessorProvider.getImageProcessor();
-
-        img = processor.loadImageFromFile(TEST_IMG);
+        img = ImageProcessor.loadImageFromFile(TEST_IMG);
     }
 
     @Test
@@ -120,5 +119,34 @@ public class ImageTest {
         }
 
         assertThat(colorList, listMatches(7));
+    }
+
+    @Test
+    public void testReplaceArea_ReplacedArea_HasExpectedValues() {
+        final int[] colors = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+        final int[] replacementColors = {0, 0, 0, 0};
+        final Image initialImage = new Image(colors, 4, 4);
+        final Image replacementImage = new Image(replacementColors, 2, 2);
+
+        initialImage.replaceArea(1, 1, replacementImage);
+        final int[] initialImageColors = initialImage.getARGB();
+        final List<Integer> colorList = new ArrayList<>(initialImageColors.length);
+        for(int i : initialImageColors) {
+            colorList.add(i);
+        }
+
+        assertThat(colorList, listMatches(1, 2, 3, 4, 5, 0, 0, 8, 9, 0, 0, 12, 13, 14, 15, 16));
+    }
+
+    @Test
+    public void testReplaceArea_VisualResults() throws Exception {
+        final Image image = ImageProcessor.loadImageFromFile(PATH + "/lenna.png");
+        final Image replacementImage = ImageUtils.downsample(image, 3);
+        final int x = (image.getWidth() - replacementImage.getWidth()) / 2;
+        final int y = (image.getHeight() - replacementImage.getHeight()) / 2;
+
+        image.replaceArea(x, y, replacementImage);
+
+        ImageProcessor.writeImageToFile(image, TEST_OUT_PATH + "/replaced.png");
     }
 }

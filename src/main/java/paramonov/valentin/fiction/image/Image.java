@@ -1,7 +1,5 @@
 package paramonov.valentin.fiction.image;
 
-import paramonov.valentin.fiction.image.processor.ImageDimensionException;
-
 import java.nio.IntBuffer;
 
 public class Image {
@@ -39,11 +37,6 @@ public class Image {
 
     public IntBuffer getBuffer() {
         return IntBuffer.wrap(argb);
-        //        IntBuffer buff = IntBuffer.wrap(argb);
-        //
-        ////        buff.flip();
-        //
-        //        return buff;
     }
 
     public byte[] getRedChannel() {
@@ -117,5 +110,43 @@ public class Image {
         }
 
         return new Image(subColors, width, height);
+    }
+
+    public void replaceArea(int x, int y, Image image) {
+        if(x < 0 || y < 0 || x >= w || y >= h) {
+            throw new ImageDimensionException();
+        }
+
+        final int imageWidth = image.getWidth();
+        final int imageHeight = image.getHeight();
+
+        if(x + imageWidth > w || y + imageHeight > h) {
+            throw new ImageDimensionException();
+        }
+
+        for(int j = y; j < y + imageHeight; j++) {
+            final int startX = j * h;
+            final int imageStartX = (j - y) * imageHeight;
+            for(int i = x; i < x + imageWidth; i++) {
+                argb[startX + i] = image.argb[imageStartX + i - x];
+            }
+        }
+    }
+
+    public void shiftColors(double contrast, double brightness) {
+        for(int i = 0; i < argb.length; i++) {
+            final int color = argb[i];
+            final int r = color & (0xff << 16) >>> 16;
+            final int g = color & (0xff << 8) >>> 8;
+            final int b = color & 0xff;
+            int shiftedR = (int) Math.round(r * contrast + brightness);
+            int shiftedG = (int) Math.round(g * contrast + brightness);
+            int shiftedB = (int) Math.round(b * contrast + brightness);
+            shiftedR = shiftedR > 255 ? 255 : shiftedR;
+            shiftedG = shiftedG > 255 ? 255 : shiftedG;
+            shiftedB = shiftedB > 255 ? 255 : shiftedB;
+
+            argb[i] = color & 0xff000000 | shiftedR << 16 | shiftedG << 8 | shiftedB;
+        }
     }
 }

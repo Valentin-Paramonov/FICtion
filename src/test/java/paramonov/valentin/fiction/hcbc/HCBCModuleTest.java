@@ -5,7 +5,6 @@ import org.junit.Test;
 import paramonov.valentin.fiction.collections.Pair;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
-import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.io.File;
 
@@ -18,7 +17,6 @@ public class HCBCModuleTest {
     private static final String TEST_OUTPUT_PATH = "target/test/out/";
     private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_PATH);
 
-    private ImageProcessor processor;
     private HCBCModule hcbc;
 
     @Before
@@ -26,13 +24,12 @@ public class HCBCModuleTest {
         if(!TEST_OUTPUT_DIR.exists()) {
             TEST_OUTPUT_DIR.mkdirs();
         }
-        processor = ImageProcessorProvider.getImageProcessor();
         hcbc = new HCBCModule();
     }
 
     @Test
     public void testCalculateTC_ArrayHasExpectedDims() throws Exception {
-        Image img = processor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img, true);
 
@@ -43,7 +40,7 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_TCForWhitePixel() throws Exception {
-        Image img = processor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img, true);
 
@@ -54,7 +51,7 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_TCForBlackPixel() throws Exception {
-        Image img = processor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
 
         double[][][] tc = hcbc.calculateTC(img);
 
@@ -65,11 +62,11 @@ public class HCBCModuleTest {
 
     @Test
     public void testCalculateTC_ProducesGrayLevelImage() throws Exception {
-        Image colorImage = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image colorImage = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         hcbc.calculateTC(colorImage, true);
 
-        processor.writeImageToFile(colorImage, TEST_OUTPUT_PATH + "gray.png");
+        ImageProcessor.writeImageToFile(colorImage, TEST_OUTPUT_PATH + "gray.png");
     }
 
     @Test
@@ -79,23 +76,23 @@ public class HCBCModuleTest {
 
     @Test
     public void testHCBCEncode() throws Exception {
-        Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image testImg = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-5, 8);
 
         Image encodedImage = encodeData.getSnd();
 
-        processor.writeImageToFile(encodedImage, TEST_OUTPUT_PATH + "encoded.png");
+        ImageProcessor.writeImageToFile(encodedImage, TEST_OUTPUT_PATH + "encoded.png");
     }
 
     @Test
     public void testHCBCDecode() throws Exception {
-        Image testImg = processor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image testImg = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
 
         Pair<HCBCTree, Image> encodeData = hcbc.hcbcEncode(testImg, 10e-4, 8);
 
         Image decodedImage = hcbc.hcbcDecode(encodeData.getFst(), encodeData.getSnd());
 
-        processor.writeImageToFile(decodedImage, TEST_OUTPUT_PATH + "decoded.png");
+        ImageProcessor.writeImageToFile(decodedImage, TEST_OUTPUT_PATH + "decoded.png");
     }
 }

@@ -1,7 +1,7 @@
 package paramonov.valentin.fiction.fic;
 
 import paramonov.valentin.fiction.image.Image;
-import paramonov.valentin.fiction.image.processor.ImageUtils;
+import paramonov.valentin.fiction.image.ImageUtils;
 
 import java.util.Iterator;
 import java.util.List;

@@ -1,7 +1,7 @@
 package paramonov.valentin.fiction.fic;
 
 import paramonov.valentin.fiction.image.Image;
-import paramonov.valentin.fiction.image.processor.ImageDimensionException;
+import paramonov.valentin.fiction.image.ImageDimensionException;
 import paramonov.valentin.fiction.transformation.Transformation;
 
 import java.util.ArrayList;

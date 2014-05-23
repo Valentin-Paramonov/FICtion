@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
-import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class TransformationTest {
     private static final int IMG_HEIGHT = 3;
     private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_PATH);
 
-    private ImageProcessor processor;
     private Image testImage;
 
     @Before
@@ -29,7 +27,6 @@ public class TransformationTest {
         if(!TEST_OUTPUT_DIR.exists()) {
             TEST_OUTPUT_DIR.mkdirs();
         }
-        processor = ImageProcessorProvider.getImageProcessor();
         testImage = new Image(COLORS, IMG_WIDTH, IMG_HEIGHT);
     }
 
@@ -66,7 +63,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_VerticalReflectionVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(width, height);
@@ -78,7 +75,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected vertically.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected vertically.png");
     }
 
     /*
@@ -101,7 +98,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_HorizontalReflectionVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(width, height);
@@ -113,7 +110,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected horizontally.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected horizontally.png");
     }
 
     /*
@@ -136,7 +133,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_DiagonalReflectionVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(height, width);
@@ -148,7 +145,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected diagonally.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected diagonally.png");
     }
 
     /*
@@ -171,7 +168,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_NegativeDiagonalReflectionVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(height, width);
@@ -183,7 +180,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected diagonally negative.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "reflected diagonally negative.png");
     }
 
     /*
@@ -206,7 +203,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_Rotation90CWVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(height, width);
@@ -218,7 +215,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 90 cw.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 90 cw.png");
     }
 
     /*
@@ -241,7 +238,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_Rotation90CCWVisual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(height, width);
@@ -253,7 +250,7 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 90 ccw.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 90 ccw.png");
     }
 
     /*
@@ -276,7 +273,7 @@ public class TransformationTest {
 
     @Test
     public void testTransformation_Rotation180Visual() throws Exception {
-        final Image image = processor.loadImageFromFile(TEST_IMG);
+        final Image image = ImageProcessor.loadImageFromFile(TEST_IMG);
         final int width = image.getWidth();
         final int height = image.getHeight();
         final Image outImage = new Image(width, height);
@@ -288,6 +285,6 @@ public class TransformationTest {
             }
         }
 
-        processor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 180.png");
+        ImageProcessor.writeImageToFile(outImage, TEST_OUTPUT_PATH + "rotated 180.png");
     }
 }

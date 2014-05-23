@@ -6,10 +6,6 @@ import paramonov.valentin.fiction.gl.processor.GLTextureProcessor;
 import paramonov.valentin.fiction.gui.canvas.action.CanvasAction;
 import paramonov.valentin.fiction.gui.canvas.operator.OperatableCanvas;
 import paramonov.valentin.fiction.image.Image;
-import paramonov.valentin.fiction.image.processor.ImageProcessor;
-import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
-import paramonov.valentin.fiction.transformation.GLTransformator;
-import paramonov.valentin.fiction.transformation.Rotate90CWGLTransform;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -17,10 +13,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLCanvas;
 
-import java.io.IOException;
-
 import static javax.media.opengl.GL2.*;
-import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.CANCAS_TRANSFORM;
 import static paramonov.valentin.fiction.gui.canvas.action.CanvasAction.CANVAS_NO_ACTION;
 
 public class AppGLCanvas extends GLCanvas implements GLEventListener, OperatableCanvas {

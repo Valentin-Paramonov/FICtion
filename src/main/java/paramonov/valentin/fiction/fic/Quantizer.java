@@ -1,15 +1,17 @@
 package paramonov.valentin.fiction.fic;
 
 public final class Quantizer {
-    final int numLevels;
-    final int minValue;
-    final int maxValue;
-    final double step;
+    private final int numLevels;
+    private final int minValue;
+    private final int maxValue;
+    private final int storageBits;
+    private final double step;
 
     public Quantizer(int numLevels, int minValue, int maxValue) {
         this.numLevels = numLevels;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        storageBits = (int) (Math.log(numLevels) / Math.log(2));
         step = (double) (maxValue - minValue) / numLevels;
     }
 
@@ -27,5 +29,9 @@ public final class Quantizer {
 
     final double deQuantize(int level) {
         return level * step + step / 2 + minValue;
+    }
+
+    public int getStorageBits() {
+        return storageBits;
     }
 }

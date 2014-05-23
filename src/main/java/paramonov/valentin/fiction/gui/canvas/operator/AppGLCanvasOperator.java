@@ -1,11 +1,8 @@
 package paramonov.valentin.fiction.gui.canvas.operator;
 
-import paramonov.valentin.fiction.gui.canvas.operator.CanvasOperator;
-import paramonov.valentin.fiction.gui.canvas.operator.OperatableCanvas;
 import paramonov.valentin.fiction.gui.canvas.operator.exception.OperationException;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
-import paramonov.valentin.fiction.image.processor.ImageProcessorProvider;
 
 import java.io.IOException;
 
@@ -22,13 +19,10 @@ public class AppGLCanvasOperator implements CanvasOperator {
 
     @Override
     public void loadImage(String imgFile) throws OperationException {
-        ImageProcessor processor =
-            ImageProcessorProvider.getImageProcessor();
-
         Image img;
 
         try {
-            img = processor.loadImageFromFile(imgFile);
+            img = ImageProcessor.loadImageFromFile(imgFile);
         } catch(IOException e) {
             throw new OperationException(e.getMessage());
         }

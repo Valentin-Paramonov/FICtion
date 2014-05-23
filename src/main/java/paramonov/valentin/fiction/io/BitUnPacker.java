@@ -110,4 +110,8 @@ public class BitUnPacker implements AutoCloseable {
             sourceFile = null;
         }
     }
+
+    public boolean isSealed() {
+        return sealed;
+    }
 }

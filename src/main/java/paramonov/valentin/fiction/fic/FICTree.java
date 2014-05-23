@@ -2,9 +2,7 @@ package paramonov.valentin.fiction.fic;
 
 import paramonov.valentin.fiction.collections.QuadTree;
 
-import java.util.Iterator;
-
-public class FICTree extends QuadTree<FICTree,RangeBlock> {
+public class FICTree extends QuadTree<FICTree, RangeBlock> {
     private Quantizer hQuantizer;
     private Quantizer vQuantizer;
 
@@ -14,8 +12,8 @@ public class FICTree extends QuadTree<FICTree,RangeBlock> {
         RangeBlock element = getElement();
         final int x = element.getX();
         final int y = element.getY();
-        final int w = element.getW();
-        final int h = element.getH();
+        final int w = element.getWidth();
+        final int h = element.getHeight();
         hQuantizer = new Quantizer(2, x, x + w);
         vQuantizer = new Quantizer(2, y, y + h);
     }
@@ -36,12 +34,12 @@ public class FICTree extends QuadTree<FICTree,RangeBlock> {
         RangeBlock element = getElement();
         final int rangeX = rangeBlock.getX();
         final int rangeY = rangeBlock.getY();
-        final int rangeW = rangeBlock.getW();
-        final int rangeH = rangeBlock.getH();
+        final int rangeW = rangeBlock.getWidth();
+        final int rangeH = rangeBlock.getHeight();
         final int elementX = element.getX();
         final int elementY = element.getY();
-        final int elementW = element.getW();
-        final int elementH = element.getH();
+        final int elementW = element.getWidth();
+        final int elementH = element.getHeight();
 
         return !(rangeFits(rangeX, rangeW, elementX, elementW) && rangeFits(rangeY, rangeH, elementY, elementH));
     }

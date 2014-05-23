@@ -9,9 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ImageProcessor {
-    ImageProcessor() {}
+    private ImageProcessor() {}
 
-    public Image loadImageFromFile(String file) throws IOException {
+    public static Image loadImageFromFile(String file) throws IOException {
         BufferedImage buffImg = loadBufferedImage(file);
 
         int w = buffImg.getWidth();
@@ -22,7 +22,7 @@ public class ImageProcessor {
         return new Image(colorArray, w, h);
     }
 
-    public void writeImageToFile(Image img, String outputFileName) throws IOException {
+    public static void writeImageToFile(Image img, String outputFileName) throws IOException {
         int w = img.getWidth();
         int h = img.getHeight();
 
@@ -35,7 +35,7 @@ public class ImageProcessor {
         }
     }
 
-    void writeImageToPngFile(Image img, String outputFileName) throws IOException {
+    static void writeImageToPngFile(Image img, String outputFileName) throws IOException {
         final int width = img.getWidth();
         final int height = img.getHeight();
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -47,7 +47,7 @@ public class ImageProcessor {
         }
     }
 
-    void writeImageToDatFile(Image img, String outputFileName, int width, int height) throws IOException {
+    static void writeImageToDatFile(Image img, String outputFileName, int width, int height) throws IOException {
         byte[] byteImage = new byte[width * height];
         int[] colorImage = img.getARGB();
 
@@ -60,58 +60,9 @@ public class ImageProcessor {
         }
     }
 
-    private BufferedImage loadBufferedImage(String file) throws IOException {
+    private static BufferedImage loadBufferedImage(String file) throws IOException {
         try(FileInputStream fis = new FileInputStream(file)) {
             return ImageIO.read(fis);
         }
-    }
-
-    public Image toGrayscale(Image img) {
-        int[] gray = img.getARGB();
-
-        for(int i = 0; i < gray.length; i++) {
-            int color = gray[i];
-
-            int r = (color >> 16) & 0xff;
-            int g = (color >> 8) & 0xff;
-            int b = color & 0xff;
-
-            int luma = (int) (.2126 * r + .7153 * g + .0721 * b);
-
-            gray[i] = (color & 0xff000000) | (luma << 16) | (luma << 8) | luma;
-        }
-
-        return new Image(gray, img.getWidth(), img.getHeight());
-    }
-
-    public double psnr(Image original, Image comparable) {
-        double mse = 0;
-
-        int[] originalRGB = original.getARGB();
-        int[] comparableRGB = comparable.getARGB();
-
-        if(originalRGB.length != comparableRGB.length) {
-            return -1;
-        }
-
-        for(int i = 0; i < originalRGB.length; i++) {
-            int originalR = (originalRGB[i] >> 16) & 0xff;
-            int comparableR = (comparableRGB[i] >> 16) & 0xff;
-            int originalG = (originalRGB[i] >> 8) & 0xff;
-            int comparableG = (comparableRGB[i] >> 8) & 0xff;
-            int originalB = originalRGB[i] & 0xff;
-            int comparableB = comparableRGB[i] & 0xff;
-
-            double diffR = originalR - comparableR;
-            double diffG = originalG - comparableG;
-            double diffB = originalB - comparableB;
-
-            mse += diffR * diffR + diffG * diffG + diffB * diffB;
-        }
-
-        mse /= 3 * originalRGB.length;
-        double psnr = 10 * Math.log10((255 * 255) / mse);
-
-        return psnr;
     }
 }
