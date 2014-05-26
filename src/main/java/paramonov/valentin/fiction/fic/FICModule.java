@@ -15,7 +15,7 @@ public class FICModule {
     private Quantizer brightnessQuantizer;
     private Quantizer contrastQuantizer;
 
-    private static final class UnpackerParams {
+    static final class UnpackerParams {
         static int imageWidth;
         static int imageHeight;
         static int minSubdivisions;
@@ -69,13 +69,18 @@ public class FICModule {
         return bitPacker.seal();
     }
 
-    private int[] computeDomainIndexBits(int imageWidth, int imageHeight, int minSubdivisions, int maxSubdivisions,
+    int[] computeDomainIndexBits(int imageWidth, int imageHeight, int minSubdivisions, int maxSubdivisions,
         double domainStep) {
-        final int subdivisionRangeSize = maxSubdivisions - minSubdivisions;
+        final int subdivisionRangeSize = maxSubdivisions - minSubdivisions + 1;
         final int[] domainIndexBits = new int[subdivisionRangeSize];
-        for(int i = 0; i < subdivisionRangeSize; i++) {
-            domainIndexBits[i] = (int) (imageWidth / Math.pow(2, minSubdivisions + i) * domainStep);
+        for(int i = minSubdivisions; i <= maxSubdivisions; i++) {
+            final double domainCountInOneDimension = Math.pow(2, i - 1) * domainStep;
+            final double domainCount = domainCountInOneDimension * domainCountInOneDimension;
+            final double domainBits = Math.log(domainCount) / Math.log(2);
+            final int domainBitsRounded = (int) Math.round(domainBits);
+            domainIndexBits[i - minSubdivisions] = domainBitsRounded;// < 0 ? 0 : domainBitsRounded;
         }
+
         return domainIndexBits;
     }
 
@@ -100,7 +105,7 @@ public class FICModule {
         if(subdivision != maxSubdivisions) {
             bitpacker.pack(0, 1);
         }
-        final int bitsNeededForDomainIndex = domainIndexBits[subdivision - minSubdivisions - 1];
+        final int bitsNeededForDomainIndex = domainIndexBits[subdivision - minSubdivisions];
         final int quantizedContrast = contrastQuantizer.quantize(contrastShift);
         final int quantizedBrightness = brightnessQuantizer.quantize(brightnessShift);
         final int contrastStorageBits = contrastQuantizer.getStorageBits();
@@ -111,7 +116,7 @@ public class FICModule {
         bitpacker.pack(quantizedBrightness, brightnessStorageBits);
     }
 
-    public Image decode(String filePath, int imageWidth, int imageHeight, int iterations) {
+    public Image decode(String filePath, int imageWidth, int imageHeight, int iterations, double tolerance) {
         final FICTree tree = new FICTree();
         try(final BitUnPacker unpacker = new BitUnPacker(filePath)) {
             readHeader(unpacker);
@@ -124,7 +129,7 @@ public class FICModule {
             throw new RuntimeException(ioe);
         }
 
-        return decodeTree(tree, imageWidth, imageHeight, iterations, 0);
+        return decodeTree(tree, imageWidth, imageHeight, iterations, tolerance);
     }
 
     private Image decodeTree(FICTree tree, int imageWidth, int imageHeight, int iterations, double tolerance) {
@@ -151,7 +156,7 @@ public class FICModule {
                 continue;
             }
             final int imageWidth = image.getWidth();
-            final RangeBlock block = tree.getElement();
+            final RangeBlock block = subTree.getElement();
             final DomainParams domain = block.getMappingDomain();
             final TransformationParams transformationParams = domain.getTransformationParams();
             final Transformation transformation = transformationParams.getTransformation();
@@ -169,30 +174,34 @@ public class FICModule {
             final int domainY = domainId / domainsHorizontally * domainHeight;
             final Image domainImage = image.subImage(domainX, domainY, domainWidth, domainHeight);
 
-            ImageUtils.downsample(domainImage, 2);
-            domainImage.shiftColors(contrastShift, brightnessShift);
-            final Image transformedDomain = ImageUtils.transform(domainImage, transformation);
+            final Image downsampledDomainImage = ImageUtils.downsample(domainImage, 2);
+            FICUtils.shiftColors(downsampledDomainImage, contrastShift, brightnessShift);
+            final Image transformedDomain = ImageUtils.transform(downsampledDomainImage, transformation);
             image.replaceArea(blockX, blockY, transformedDomain);
         }
     }
 
-    private void unpackTree(FICTree tree, BitUnPacker unpacker, int[] domainIndexBits, int x, int y, int width,
-        int height, int subdivision) throws IOException {
+    void unpackTree(FICTree tree, BitUnPacker unpacker, int[] domainIndexBits, int x, int y, int width, int height,
+        int subdivision) throws IOException {
 
         final RangeBlock block = new RangeBlock(x, y, width, height);
         tree.add(block);
-        final int furtherRecursion = unpacker.read(1);
 
-        if(subdivision != UnpackerParams.maxSubdivisions && furtherRecursion == 1) {
+        int furtherRecursion = 0;
+        if(subdivision != UnpackerParams.maxSubdivisions) {
+            furtherRecursion = unpacker.read(1);
+        }
+
+        if(furtherRecursion == 1) {
             subdivision++;
             final int block1W = (width + 1) / 2;
             final int block1H = (height + 1) / 2;
             final int block4W = width / 2;
             final int block4H = height / 2;
-            unpackTree(tree, unpacker, domainIndexBits, 0, 0, block1W, block1H, subdivision);
-            unpackTree(tree, unpacker, domainIndexBits, block1W, 0, block4W, block1H, subdivision);
-            unpackTree(tree, unpacker, domainIndexBits, 0, block1H, block1W, block4H, subdivision);
-            unpackTree(tree, unpacker, domainIndexBits, block1W, block1H, block4W, block4H, subdivision);
+            unpackTree(tree, unpacker, domainIndexBits, x, y, block1W, block1H, subdivision);
+            unpackTree(tree, unpacker, domainIndexBits, x + block1W, y, block4W, block1H, subdivision);
+            unpackTree(tree, unpacker, domainIndexBits, x, y + block1H, block1W, block4H, subdivision);
+            unpackTree(tree, unpacker, domainIndexBits, x + block1W, y + block1H, block4W, block4H, subdivision);
             return;
         }
 
@@ -210,6 +219,7 @@ public class FICModule {
             new TransformationParams(Transformation.values()[transformation], 0, contrastShift, brightnessShift);
         domain.setId(domainIndex);
         domain.setTransformationParams(transformationParams);
+        block.setMappingDomain(domain);
     }
 
     private void readHeader(BitUnPacker unpacker) throws IOException {

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import paramonov.valentin.fiction.Resources;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.ImageUtils;
 
@@ -14,10 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class ImageProcessorTest {
-    private static final String RESOURCE_PATH = "src/test/resources/";
-    private static final String TEST_IMG = RESOURCE_PATH + "test image.png";
-    private static final String TEST_OUTPUT_PATH = "target/test/out/";
-    private static final File TEST_OUTPUT_DIR = new File(TEST_OUTPUT_PATH);
+    private static final File TEST_OUTPUT_DIR = new File(Resources.TEST_OUT_PATH);
 
     @Before
     public void setUp() {
@@ -28,7 +26,7 @@ public class ImageProcessorTest {
 
     @Test
     public void testLoadImageFromFile_ProducedImageDims() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
         int imgW = img.getWidth();
         int imgH = img.getHeight();
@@ -39,7 +37,7 @@ public class ImageProcessorTest {
 
     @Test
     public void testLoadImageFromFile_ColorArraySize() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
         int colorsLength = img.getARGB().length;
 
@@ -48,7 +46,7 @@ public class ImageProcessorTest {
 
     @Test
     public void testLoadImageFromFile_ImageOrientation() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
         int firstPixel = img.getARGB()[0];
 
@@ -57,7 +55,7 @@ public class ImageProcessorTest {
 
     @Test
     public void testLoadImageFromFile_SolidPixel() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
         int solidPixel = img.getARGB()[5];
 
@@ -66,7 +64,7 @@ public class ImageProcessorTest {
 
     @Test
     public void testLoadImageFromFile_AlphaPixel() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image img = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
         int alphaPixel = img.getARGB()[24];
 
@@ -75,9 +73,9 @@ public class ImageProcessorTest {
 
     @Test
     public void testWriteImageToFile_NoExtension() throws Exception {
-        Image outImg = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image outImg = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
-        String outFilePath = TEST_OUTPUT_PATH + "out image";
+        String outFilePath = Resources.TEST_OUT_PATH + "/out image";
 
         ImageProcessor.writeImageToFile(outImg, outFilePath);
 
@@ -88,9 +86,9 @@ public class ImageProcessorTest {
 
     @Test
     public void testWriteImageToFile_WithExtension() throws Exception {
-        Image outImg = ImageProcessor.loadImageFromFile(TEST_IMG);
+        Image outImg = ImageProcessor.loadImageFromFile(Resources.TEST_IMG);
 
-        String outFilePath = TEST_OUTPUT_PATH + "out image.png";
+        String outFilePath = Resources.TEST_OUT_PATH + "/out image.png";
 
         ImageProcessor.writeImageToFile(outImg, outFilePath);
 
@@ -101,23 +99,24 @@ public class ImageProcessorTest {
 
     @Test
     public void testToGrayscale_ProducesGrayscaleImage() throws Exception {
-        Image colorImage = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image colorImage = ImageProcessor.loadImageFromFile(Resources.LENNA);
 
         Image grayscaleImage = ImageUtils.toGrayscale(colorImage);
 
-        ImageProcessor.writeImageToFile(grayscaleImage, TEST_OUTPUT_PATH + "grayscale.png");
+        ImageProcessor.writeImageToFile(grayscaleImage, Resources.TEST_OUT_PATH + "/grayscale.png");
     }
 
     @Test
     public void testWriteImageToDatFile() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image img = ImageProcessor.loadImageFromFile(Resources.LENNA);
 
-        ImageProcessor.writeImageToDatFile(img, TEST_OUTPUT_PATH + "lenna.dat", img.getWidth(), img.getHeight());
+        ImageProcessor
+            .writeImageToDatFile(img, Resources.TEST_OUT_PATH + "/lenna.dat", img.getWidth(), img.getHeight());
     }
 
     @Test
     public void testPSNR_SameImageIsInfinity() throws Exception {
-        Image img = ImageProcessor.loadImageFromFile(RESOURCE_PATH + "lenna.png");
+        Image img = ImageProcessor.loadImageFromFile(Resources.LENNA);
 
         double psnr = ImageUtils.psnr(img, img);
 

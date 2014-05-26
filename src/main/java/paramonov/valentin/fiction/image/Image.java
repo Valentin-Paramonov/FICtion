@@ -136,8 +136,8 @@ public class Image {
     public void shiftColors(double contrast, double brightness) {
         for(int i = 0; i < argb.length; i++) {
             final int color = argb[i];
-            final int r = color & (0xff << 16) >>> 16;
-            final int g = color & (0xff << 8) >>> 8;
+            final int r = (color & (0xff << 16)) >>> 16;
+            final int g = (color & (0xff << 8)) >>> 8;
             final int b = color & 0xff;
             int shiftedR = (int) Math.round(r * contrast + brightness);
             int shiftedG = (int) Math.round(g * contrast + brightness);

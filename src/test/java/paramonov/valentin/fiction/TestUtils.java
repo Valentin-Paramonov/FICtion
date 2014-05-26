@@ -4,9 +4,10 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public final class ListMatcher {
+public final class TestUtils {
     public static Matcher<List<Integer>> listMatches(final Object... list) {
         return new BaseMatcher<List<Integer>>() {
             @Override
@@ -52,5 +53,25 @@ public final class ListMatcher {
                 description.appendText(sb.toString());
             }
         };
+    }
+
+    public static final List<Integer> toIntegerList(byte[] bytes) {
+        List<Integer> integers = new ArrayList<>(bytes.length);
+
+        for(byte b : bytes) {
+            integers.add(0xff & b);
+        }
+
+        return integers;
+    }
+
+    public static final List<Integer> toIntegerList(int[] ints) {
+        List<Integer> integers = new ArrayList<>(ints.length);
+
+        for(int i : ints) {
+            integers.add(i);
+        }
+
+        return integers;
     }
 }

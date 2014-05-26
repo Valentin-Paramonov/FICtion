@@ -20,6 +20,7 @@ public class FICPartition extends RecursiveAction {
 
     public FICPartition(FICTree tree, Image image, FICProperties properties, int startX, int startY, int w, int h,
         int currentSubdivision) {
+
         this.tree = tree;
         this.image = image;
         this.properties = properties;
@@ -32,8 +33,6 @@ public class FICPartition extends RecursiveAction {
 
     @Override
     protected void compute() {
-        currentSubdivision++;
-
         final RangeBlock rangeBlock = new RangeBlock(startX, startY, w, h);
         synchronized(tree) {
             tree.add(rangeBlock);
@@ -43,16 +42,17 @@ public class FICPartition extends RecursiveAction {
         final int maxSubdivisions = properties.getMaxSubdivisions();
         final double tolerance = properties.getTolerance();
 
-        if(currentSubdivision > minSubdivisions) {
+        if(currentSubdivision >= minSubdivisions) {
             final DomainParams domainParams = computeCoefficients();
             final TransformationParams transformationParams = domainParams.getTransformationParams();
             final double rms = transformationParams.getRms();
-            if(rms <= tolerance || currentSubdivision >= maxSubdivisions) {
+            if(rms <= tolerance || currentSubdivision == maxSubdivisions) {
                 rangeBlock.setMappingDomain(domainParams);
                 return;
             }
         }
 
+        currentSubdivision++;
         final int block1Width = (w + 1) / 2;
         final int block1Height = (h + 1) / 2;
         final int block4Width = w / 2;
@@ -73,17 +73,20 @@ public class FICPartition extends RecursiveAction {
         invokeAll(partition1, partition2, partition3, partition4);
     }
 
-    private DomainParams computeCoefficients() {
+    DomainParams computeCoefficients() {
         final Image range = image.subImage(startX, startY, w, h);
         double minRms = Double.MAX_VALUE;
         final DomainParams bestDomain = new DomainParams();
         final int domainWidth = w * 2;
         final int domainHeight = h * 2;
         final double domainStep = properties.getDomainStep();
+        final int imageWidth = image.getWidth();
+        final int imageHeight = image.getHeight();
 
-        final int spacing = (int) Math.round(domainStep * domainWidth);
-        for(int y = 0; y < h; y += spacing) {
-            for(int x = 0; x < w; x += spacing) {
+        final int horizontalSpacing = (int) Math.round(domainStep * domainWidth);
+        final int verticalSpacing = (int) Math.round(domainStep * domainHeight);
+        for(int y = 0; y < imageHeight; y += verticalSpacing) {
+            for(int x = 0; x < imageWidth; x += horizontalSpacing) {
                 final Image domain = image.subImage(x, y, domainWidth, domainHeight);
                 final Image downsampledDomain = ImageUtils.downsample(domain, 2);
                 final List<TransformationParams> parameters = FICUtils.computeDifferencesRms(range, downsampledDomain);
@@ -93,7 +96,9 @@ public class FICPartition extends RecursiveAction {
                     continue;
                 }
                 minRms = rms;
-                bestDomain.setId(y * w / spacing + x / spacing);
+                final int domainIndex =
+                    (y / verticalSpacing) * (imageWidth / horizontalSpacing) + x / horizontalSpacing;
+                bestDomain.setId(domainIndex);
                 bestDomain.setTransformationParams(bestTransformationParameters);
             }
         }

@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static paramonov.valentin.fiction.ListMatcher.listMatches;
+import static paramonov.valentin.fiction.TestUtils.listMatches;
 
 public class BitPackerTest {
     private BitPacker packer;

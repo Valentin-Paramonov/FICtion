@@ -44,7 +44,7 @@ public class ImageUtils {
         return newImage;
     }
 
-    public static double psnr(Image original, Image comparable) {
+    public static double mse(Image original, Image comparable) {
         double mse = 0;
 
         int[] originalRGB = original.getARGB();
@@ -70,7 +70,13 @@ public class ImageUtils {
         }
 
         mse /= 3 * originalRGB.length;
-        double psnr = 10 * Math.log10((255 * 255) / mse);
+
+        return mse;
+    }
+
+    public static double psnr(Image original, Image comparable) {
+        final double mse = mse(original, comparable);
+        final double psnr = 10 * Math.log10((255 * 255) / Math.sqrt(mse));
 
         return psnr;
     }
@@ -102,17 +108,22 @@ public class ImageUtils {
                 return reflectVertically(image);
 
             case REFLECTION_HORIZONTAL:
-                return null;
+                return reflectHorizontally(image);
+
             case REFLECTION_DIAGONAL:
-                return null;
+                return reflectDiagonally(image);
+
             case REFLECTION_NEGATIVE_DIAGONAL:
-                return null;
+                return reflectDiagonallyNegative(image);
+
             case ROTATION_90CW:
-                return null;
+                return rotate90CCW(image);
+
             case ROTATION_90CCW:
-                return null;
+                return rotate90CW(image);
+
             case ROTATION_180:
-                return null;
+                return rotate180(image);
 
             default:
                 return null;
@@ -129,6 +140,96 @@ public class ImageUtils {
         for(int i = 0; i < imageColors.length; i += width) {
             for(int j = 0; j < width; j++) {
                 transformedImageColors[i + width - 1 - j] = imageColors[i + j];
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image reflectHorizontally(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(width, height);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(i, height - 1 - j, color);
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image reflectDiagonally(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(height, width);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(j, i, color);
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image reflectDiagonallyNegative(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(height, width);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(height - 1 - j, width - 1 - i, color);
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image rotate90CW(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(height, width);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(height - 1 - j, i, color);
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image rotate90CCW(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(height, width);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(j, width - 1 - i, color);
+            }
+        }
+
+        return transformedImage;
+    }
+
+    public static Image rotate180(Image image) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final Image transformedImage = new Image(width, height);
+
+        for(int j = 0; j < height; j++) {
+            for(int i = 0; i < width; i++) {
+                final int color = image.getColor(i, j);
+                transformedImage.setColor(width - 1 - i, height - 1 - j, color);
             }
         }
 

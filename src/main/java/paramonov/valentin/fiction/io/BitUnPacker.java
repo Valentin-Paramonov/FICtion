@@ -34,10 +34,12 @@ public class BitUnPacker implements AutoCloseable {
         final int bufferOffset = leftInBuffer - size;
 
         if(bufferOffset < 0) {
-            final int abs = Math.abs(leftInBuffer);
+            final int abs = Math.abs(bufferOffset);
             final int mask = -1 >>> (Integer.SIZE - leftInBuffer);
             leftInBuffer = 0;
-            return buffer & mask | read(abs);
+            final int readThisTime = (buffer & mask) << abs;
+
+            return readThisTime | read(abs);
         }
 
         int mask = -1 >>> (Integer.SIZE - size) << bufferOffset;
@@ -70,7 +72,7 @@ public class BitUnPacker implements AutoCloseable {
             if(i != 0) {
                 buffer <<= Byte.SIZE;
             }
-            buffer |= 0xff & fileBuffer.get();
+            buffer |= fileBuffer.get() & 0xff;
         }
         leftInBuffer = Integer.SIZE;
     }

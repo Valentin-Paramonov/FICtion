@@ -96,4 +96,17 @@ public class FICUtils {
             diffs[t][4] += color * datColor;
         }
     }
+
+    public static void shiftColors(Image image, double contrast, double brightness) {
+        final int[] colors = image.getARGB();
+
+        for(int i = 0; i < colors.length; i++) {
+            final int color = colors[i];
+            final int gray = color & 0xff;
+            int grayShifted = (int) Math.round(gray * contrast + brightness);
+            grayShifted = (grayShifted > 255) ? 255 : (grayShifted < 0) ? 0 : grayShifted;
+
+            colors[i] = color & 0xff000000 | grayShifted << 16 | grayShifted << 8 | grayShifted;
+        }
+    }
 }

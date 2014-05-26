@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertThat;
-import static paramonov.valentin.fiction.ListMatcher.listMatches;
+import static paramonov.valentin.fiction.TestUtils.listMatches;
 
 public class TransformationTest {
     private static final String RESOURCE_PATH = "src/test/resources/";

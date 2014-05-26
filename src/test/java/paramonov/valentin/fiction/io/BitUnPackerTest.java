@@ -5,18 +5,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import paramonov.valentin.fiction.Resources;
 
 import java.nio.ByteBuffer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
-import static paramonov.valentin.fiction.ListMatcher.listMatches;
+import static paramonov.valentin.fiction.TestUtils.listMatches;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BitUnPackerTest {
@@ -88,12 +90,27 @@ public class BitUnPackerTest {
         final BitPacker bitPacker = new BitPacker().pack(0xff, 8).pack(0, 3).pack(0x07, 3);
         final byte[] bytes = bitPacker.seal();
         final String filePath = OUTPUT_RESOURCE_PATH + "/packed.fic";
-        Files.write(FileSystems.getDefault().getPath(filePath), bytes,
-            StandardOpenOption.CREATE);
+        Files.write(FileSystems.getDefault().getPath(filePath), bytes, StandardOpenOption.CREATE);
         final BitUnPacker bitUnPacker = new BitUnPacker(filePath);
 
         final List<Integer> integers = Arrays.asList(bitUnPacker.read(8), bitUnPacker.read(3), bitUnPacker.read(3));
 
-        assertThat(integers, listMatches(0xff,0,0x07));
+        assertThat(integers, listMatches(0xff, 0, 0x07));
+    }
+
+    @Test
+    public void testRead_ByteSequence_AsExpected() throws Exception {
+        final BitUnPacker bitUnPacker = new BitUnPacker(Resources.PACKED_TREE);
+        final List<Integer> integers = new ArrayList<>();
+
+        integers.add(bitUnPacker.read(1));
+        for(int i = 0; i < 4; i++) {
+            integers.add(bitUnPacker.read(2));
+            integers.add(bitUnPacker.read(3));
+            integers.add(bitUnPacker.read(5));
+            integers.add(bitUnPacker.read(7));
+        }
+
+        assertThat(integers, listMatches(1, 0, 1, 24, 70, 1, 1, 24, 70, 2, 1, 24, 70, 3, 1, 24, 70));
     }
 }

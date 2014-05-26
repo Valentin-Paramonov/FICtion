@@ -34,7 +34,9 @@ target/*
 
 src/test/resources/*
 !src/test/resources/lenna.png
+!src/test/resources/lenna grayscale.png
 !src/test/resources/lenna rect.png
 !src/test/resources/test image.png
 !src/test/resources/bytes.dat
+!src/test/resources/packed tree.fic
 

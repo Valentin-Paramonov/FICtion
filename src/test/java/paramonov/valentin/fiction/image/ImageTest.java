@@ -2,6 +2,7 @@ package paramonov.valentin.fiction.image;
 
 import org.junit.Before;
 import org.junit.Test;
+import paramonov.valentin.fiction.Resources;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
 
 import java.nio.IntBuffer;
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static paramonov.valentin.fiction.ListMatcher.listMatches;
+import static paramonov.valentin.fiction.TestUtils.listMatches;
 
 public class ImageTest {
     private Image img;
@@ -148,5 +149,16 @@ public class ImageTest {
         image.replaceArea(x, y, replacementImage);
 
         ImageProcessor.writeImageToFile(image, TEST_OUT_PATH + "/replaced.png");
+    }
+
+    @Test
+    public void testShiftColors_NoShift_MseEquals0() throws Exception {
+        final Image image = ImageProcessor.loadImageFromFile(Resources.LENNA);
+        final Image imageCopy = image.copy();
+
+        image.shiftColors(1, 0);
+        final double mse = ImageUtils.mse(image, imageCopy);
+
+        assertThat(mse, equalTo(0.));
     }
 }
