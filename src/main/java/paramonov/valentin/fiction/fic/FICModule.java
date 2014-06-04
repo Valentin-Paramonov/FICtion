@@ -134,16 +134,15 @@ public class FICModule {
 
     private Image decodeTree(FICTree tree, int imageWidth, int imageHeight, int iterations, double tolerance) {
         final Image image = new Image(imageWidth, imageHeight);
-        Image prevImage;
         int iteration = 0;
 
         while(iteration < iterations) {
-            prevImage = image.copy();
+            final Image prevImage = image.copy();
             decodeOnce(tree, image);
-            final double psnr = ImageUtils.psnr(image, prevImage);
-            if(psnr < tolerance) {
-                break;
-            }
+//            final double psnr = ImageUtils.psnr(prevImage, image);
+//            if(psnr < properties.getTolerance()) {
+//                break;
+//            }
             iteration++;
         }
 

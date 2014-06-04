@@ -1,12 +1,14 @@
 package paramonov.valentin.fiction.fic;
 
+import org.junit.Before;
 import org.junit.Test;
+import paramonov.valentin.fiction.Resources;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.transformation.Transformation;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -33,7 +35,7 @@ public class FICUtilsTest {
         final List<TransformationParams> parameters = FICUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
         final double rmsIdentity = parameters.get(Transformation.IDENTITY.ordinal()).getRms();
         final BigDecimal result = new BigDecimal(rmsIdentity).setScale(10, BigDecimal.ROUND_HALF_EVEN);
-        final BigDecimal expectedResult = new BigDecimal(Math.sqrt(.8)).setScale(10, BigDecimal.ROUND_HALF_EVEN);
+        final BigDecimal expectedResult = new BigDecimal(.8).setScale(10, BigDecimal.ROUND_HALF_EVEN);
 
         assertThat(result, equalTo(expectedResult));
     }

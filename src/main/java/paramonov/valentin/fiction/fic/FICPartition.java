@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.RecursiveAction;
 
-public class FICPartition extends RecursiveAction {
+class FICPartition extends RecursiveAction {
     private final FICTree tree;
     private final Image image;
     private final FICProperties properties;
@@ -106,7 +106,7 @@ public class FICPartition extends RecursiveAction {
         return bestDomain;
     }
 
-    private TransformationParams findMinimalRms(List<TransformationParams> parameters) {
+    TransformationParams findMinimalRms(List<TransformationParams> parameters) {
         final Iterator<TransformationParams> paramIterator = parameters.iterator();
         TransformationParams bestParams = paramIterator.next();
 

@@ -1,6 +1,8 @@
 package paramonov.valentin.fiction.fic;
 
-public class RangeBlock {
+import paramonov.valentin.fiction.collections.Block;
+
+public class RangeBlock implements Block {
     private final int x;
     private final int y;
     private final int width;

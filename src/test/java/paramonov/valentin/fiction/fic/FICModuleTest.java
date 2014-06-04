@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import paramonov.valentin.fiction.Resources;
 import paramonov.valentin.fiction.TestUtils;
+import paramonov.valentin.fiction.collections.QuadTreeUtils;
 import paramonov.valentin.fiction.image.Image;
 import paramonov.valentin.fiction.image.ImageUtils;
 import paramonov.valentin.fiction.image.processor.ImageProcessor;
@@ -13,6 +14,7 @@ import paramonov.valentin.fiction.io.BitUnPacker;
 import paramonov.valentin.fiction.io.IOUtils;
 import paramonov.valentin.fiction.transformation.Transformation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,20 +29,25 @@ public class FICModuleTest {
     private FICTree tree;
     private DomainParams domainParams;
     private TransformationParams transformationParams;
+    private static final File TEST_OUTPUT_DIR = new File(Resources.TEST_OUT_PATH);
 
     @Before
     public void setUp() {
+        if(!TEST_OUTPUT_DIR.exists()) {
+            TEST_OUTPUT_DIR.mkdirs();
+        }
+
         properties = new FICProperties();
         properties.setBrightnessLevels(128);
-        properties.setMinBrightnessValue(-128);
-        properties.setMaxBrightnessValue(128);
+        properties.setMinBrightnessValue(-255);
+        properties.setMaxBrightnessValue(255);
         properties.setContrastLevels(32);
         properties.setMinContrastValue(-1);
         properties.setMaxContrastValue(1);
         properties.setDomainStep(1.);
         properties.setMinSubdivisions(1);
         properties.setMaxSubdivisions(1);
-        properties.setTolerance(0.1);
+        properties.setTolerance(.1);
         ficModule = new FICModule(properties);
         tree = new FICTree();
         final RangeBlock rootBlock = new RangeBlock(0, 0, 2, 2);
@@ -154,8 +161,8 @@ public class FICModuleTest {
 
     @Test
     public void testEncode_Decode() throws Exception {
-        properties.setMinSubdivisions(3);
-        properties.setMaxSubdivisions(5);
+        properties.setMinSubdivisions(2);
+        properties.setMaxSubdivisions(4);
         final Image image = ImageProcessor.loadImageFromFile(Resources.LENNA_GRAYSCALE);
         final Image downsampledImage = ImageUtils.downsample(image, 8);
         final String filePath = Resources.TEST_OUT_PATH + "/encoded.fic";
@@ -171,7 +178,7 @@ public class FICModuleTest {
     @Ignore
     @Test
     public void testEncode() throws Exception {
-        properties.setMinSubdivisions(5);
+        properties.setMinSubdivisions(3);
         properties.setMaxSubdivisions(7);
         final Image image = ImageProcessor.loadImageFromFile(Resources.LENNA_GRAYSCALE);
 
@@ -179,6 +186,9 @@ public class FICModuleTest {
         final FICTree encodedTree = ficModule.encode(image);
         final long after = System.currentTimeMillis();
         final long executionTime = after - before;
+
+        final Image img = QuadTreeUtils.visualize(encodedTree);
+        ImageProcessor.writeImageToFile(img, Resources.TEST_OUT_PATH + "/vsualization-testEncode.png");
 
         final byte[] bytes = ficModule.storeTree(encodedTree);
         IOUtils.writeBytesToFile(bytes, Resources.TEST_OUT_PATH + "/001.fic");

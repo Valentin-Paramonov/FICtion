@@ -6,7 +6,7 @@ import paramonov.valentin.fiction.image.Image;
 
 import java.util.concurrent.ForkJoinPool;
 
-class HCBCModule {
+public class HCBCModule {
     public Pair<HCBCTree, Image> hcbcEncode(Image img, double tolerance, int maxLevel) {
 
         Image imgCopy = new Image(img.getARGB(), img.getWidth(), img.getHeight());

@@ -38,7 +38,7 @@ public class FICUtils {
             final double s = (n * abSum - aSum * bSum) / (n * a2Sum - aSum * aSum);
             final double o = (bSum - s * aSum) / n;
             final double rms =
-                Math.sqrt(1 / n * (b2Sum + s * (s * a2Sum - 2 * abSum + 2 * o * aSum) + o * (n * o - 2 * bSum)));
+                Math.sqrt((b2Sum + s * (s * a2Sum - 2 * abSum + 2 * o * aSum) + o * (n * o - 2 * bSum)) / n);
 
             final TransformationParams transformationParams = new TransformationParams(transformations[i], rms, s, o);
             rmsParams.add(transformationParams);
@@ -106,7 +106,7 @@ public class FICUtils {
             int grayShifted = (int) Math.round(gray * contrast + brightness);
             grayShifted = (grayShifted > 255) ? 255 : (grayShifted < 0) ? 0 : grayShifted;
 
-            colors[i] = color & 0xff000000 | grayShifted << 16 | grayShifted << 8 | grayShifted;
+            colors[i] = (color & 0xff000000) | grayShifted << 16 | grayShifted << 8 | grayShifted;
         }
     }
 }

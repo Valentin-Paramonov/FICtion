@@ -1,6 +1,8 @@
 package paramonov.valentin.fiction.hcbc;
 
-public class HCBCBlock {
+import paramonov.valentin.fiction.collections.Block;
+
+public class HCBCBlock implements Block {
     private final int x;
     private final int y;
     private final int width;

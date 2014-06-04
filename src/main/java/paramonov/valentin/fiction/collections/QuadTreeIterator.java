@@ -41,6 +41,10 @@ final class QuadTreeIterator<T extends QuadTree<T, V>, V> implements Iterator<T>
     }
 
     private void treeToArray(T tree, List<T> subTrees) {
+        if(tree == null) {
+            return;
+        }
+
         subTrees.add(tree);
         if(!tree.hasChildren()) {
             return;

@@ -15,7 +15,7 @@ public final class Quantizer {
         step = (double) (maxValue - minValue) / numLevels;
     }
 
-    final int quantize(double value) {
+    public final int quantize(double value) {
         if(value < minValue) {
             return 0;
         }
@@ -24,14 +24,18 @@ public final class Quantizer {
             return numLevels - 1;
         }
 
-        return (int) Math.floor((value - minValue) / step);
+        return (int) (sgn(value) * Math.floor(Math.abs(value) / step + 1/2.));
     }
 
-    final double deQuantize(int level) {
-        return level * step + step / 2 + minValue;
+    public final double deQuantize(int level) {
+        return level * step;
     }
 
     public int getStorageBits() {
         return storageBits;
+    }
+
+    private int sgn(double x) {
+        return x < 0 ? -1 : 1;
     }
 }
