@@ -33,7 +33,7 @@ public class FICModuleTest {
 
     @Before
     public void setUp() {
-        if(!TEST_OUTPUT_DIR.exists()) {
+        if (!TEST_OUTPUT_DIR.exists()) {
             TEST_OUTPUT_DIR.mkdirs();
         }
 
@@ -47,7 +47,7 @@ public class FICModuleTest {
         properties.setDomainStep(1.);
         properties.setMinSubdivisions(1);
         properties.setMaxSubdivisions(1);
-        properties.setTolerance(.1);
+        properties.setTolerance(0.);
         ficModule = new FICModule(properties);
         tree = new FICTree();
         final RangeBlock rootBlock = new RangeBlock(0, 0, 2, 2);
@@ -62,7 +62,7 @@ public class FICModuleTest {
 
         tree.add(rootBlock);
         final List<RangeBlock> blocks = Arrays.asList(element1, element2, element3, element4);
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             final RangeBlock block = blocks.get(i);
             final DomainParams domain = new DomainParams();
             domain.setId(i);
@@ -82,7 +82,6 @@ public class FICModuleTest {
 
     @Test
     public void testPackTree_PackedBytes_HaveExpectedValues() throws Exception {
-        final String filePath = Resources.TEST_OUT_PATH + "/packed 01.fic";
         final BitPacker bitPacker = new BitPacker();
         final int[] domainIndexBits = {0, 2};
 
@@ -105,8 +104,8 @@ public class FICModuleTest {
         FICModule.UnpackerParams.imageHeight = 2;
 
         ficModule.unpackTree(tree, bitUnPacker, domainIndeBits, 0, 0, 2, 2, 0);
-        for(FICTree subTree : tree) {
-            if(!subTree.hasChildren()) {
+        for (FICTree subTree : tree) {
+            if (!subTree.hasChildren()) {
                 final RangeBlock block = subTree.getElement();
                 final DomainParams domain = block.getMappingDomain();
                 final int domainId = domain.getId();

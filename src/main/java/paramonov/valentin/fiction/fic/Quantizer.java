@@ -16,26 +16,24 @@ public final class Quantizer {
     }
 
     public final int quantize(double value) {
-        if(value < minValue) {
+        if (value < minValue) {
             return 0;
         }
 
-        if(value >= maxValue) {
+        if (value >= maxValue) {
             return numLevels - 1;
         }
 
-        return (int) (sgn(value) * Math.floor(Math.abs(value) / step + 1/2.));
+        int level = (int) Math.floor((value - minValue) / step + 0.5);
+
+        return level < numLevels ? level : numLevels - 1;
     }
 
     public final double deQuantize(int level) {
-        return level * step;
+        return (level) * step + minValue / step;
     }
 
     public int getStorageBits() {
         return storageBits;
-    }
-
-    private int sgn(double x) {
-        return x < 0 ? -1 : 1;
     }
 }

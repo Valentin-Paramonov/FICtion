@@ -27,7 +27,10 @@ public class FICTree extends QuadTree<FICTree, RangeBlock> {
         final int rangeX = rangeBlock.getX();
         final int rangeY = rangeBlock.getY();
 
-        return hQuantizer.quantize(rangeX) + 2 * vQuantizer.quantize(rangeY);
+        int hQuad = hQuantizer.quantize(rangeX);
+        int vQuad = vQuantizer.quantize(rangeY);
+
+        return hQuad + 2 * vQuad;
     }
 
     private boolean elementDoesNotFit(RangeBlock rangeBlock) {

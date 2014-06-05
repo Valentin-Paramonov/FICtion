@@ -37,6 +37,6 @@ public class QuantizerTest {
     public void testName() {
         final int quantize = new Quantizer(32, -1, 1).quantize(.5);
 
-        assertThat(quantize, equalTo(8));
+        assertThat(quantize, equalTo(24));
     }
 }
