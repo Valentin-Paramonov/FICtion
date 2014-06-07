@@ -16,11 +16,11 @@ public final class Quantizer {
     }
 
     public final int quantize(double value) {
-        if (value < minValue) {
+        if(value < minValue) {
             return 0;
         }
 
-        if (value >= maxValue) {
+        if(value >= maxValue) {
             return numLevels - 1;
         }
 

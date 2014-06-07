@@ -126,7 +126,7 @@ public class ImageProcessorTest {
     @Ignore
     @Test
     public void testName() throws Exception {
-        Image img1 = ImageProcessor.loadImageFromFile("/home/valentine/" + "lenna.bmp");
+        Image img1 = ImageProcessor.loadImageFromFile("/home/valentine/" + "lenna_pgm.png");
         Image img2 = ImageProcessor.loadImageFromFile("/home/valentine/" + "lenna.jpg");
 
         double psnr = ImageUtils.psnr(img1, img2);

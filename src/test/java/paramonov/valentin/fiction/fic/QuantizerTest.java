@@ -14,7 +14,7 @@ public class QuantizerTest {
 
     @Test
     public void testQuantize() {
-        final int quantizationLevel = quantizer.quantize(2/3.);
+        final int quantizationLevel = quantizer.quantize(2 / 3.);
 
         assertThat(quantizationLevel, equalTo(3));
     }
@@ -34,9 +34,27 @@ public class QuantizerTest {
     }
 
     @Test
-    public void testName() {
+    public void testQuantize_32Levels() {
         final int quantize = new Quantizer(32, -1, 1).quantize(.5);
 
         assertThat(quantize, equalTo(24));
+    }
+
+    @Test
+    public void testQuantize_2Levels() {
+        final Quantizer quantizer = new Quantizer(2, 0, 16);
+
+        final int quantized = quantizer.quantize(8);
+
+        assertThat(quantized, equalTo(1));
+    }
+
+    @Test
+    public void testQuantize_2Levels2() {
+        final Quantizer quantizer = new Quantizer(2, 8, 16);
+
+        final int quantized = quantizer.quantize(8);
+
+        assertThat(quantized, equalTo(0));
     }
 }

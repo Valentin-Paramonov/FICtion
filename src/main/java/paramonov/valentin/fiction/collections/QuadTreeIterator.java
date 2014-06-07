@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-final class QuadTreeIterator<T extends QuadTree<T, V>, V> implements Iterator<T> {
+final class QuadTreeIterator<T extends QuadTree<T, ?>> implements Iterator<T> {
     private final T tree;
     private Iterator<T> iterator;
 

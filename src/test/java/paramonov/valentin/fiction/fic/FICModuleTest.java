@@ -89,7 +89,7 @@ public class FICModuleTest {
         final byte[] bytes = bitPacker.seal();
         final List<Integer> integers = TestUtils.toIntegerList(bytes);
 
-        assertThat(integers, listMatches(0x87, 0x11, 0x93, 0x88, 0xD1, 0xC4, 0x6C, 0xE2, 0x30));
+        assertThat(integers, listMatches(0x87, 0x10, 0xD3, 0x88, 0x71, 0xC4, 0x3C, 0xE2, 0x18));
     }
 
     @Test
@@ -160,8 +160,8 @@ public class FICModuleTest {
 
     @Test
     public void testEncode_Decode() throws Exception {
-        properties.setMinSubdivisions(2);
-        properties.setMaxSubdivisions(4);
+        properties.setMinSubdivisions(3);
+        properties.setMaxSubdivisions(5);
         final Image image = ImageProcessor.loadImageFromFile(Resources.LENNA_GRAYSCALE);
         final Image downsampledImage = ImageUtils.downsample(image, 8);
         final String filePath = Resources.TEST_OUT_PATH + "/encoded.fic";

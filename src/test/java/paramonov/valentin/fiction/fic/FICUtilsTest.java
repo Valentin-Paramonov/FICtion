@@ -35,7 +35,7 @@ public class FICUtilsTest {
         final List<TransformationParams> parameters = FICUtils.computeDifferencesRms(TEST_IMAGE, transformationImage);
         final double rmsIdentity = parameters.get(Transformation.IDENTITY.ordinal()).getRms();
         final BigDecimal result = new BigDecimal(rmsIdentity).setScale(10, BigDecimal.ROUND_HALF_EVEN);
-        final BigDecimal expectedResult = new BigDecimal(.8).setScale(10, BigDecimal.ROUND_HALF_EVEN);
+        final BigDecimal expectedResult = new BigDecimal(Math.sqrt(.8)).setScale(10, BigDecimal.ROUND_HALF_EVEN);
 
         assertThat(result, equalTo(expectedResult));
     }

@@ -67,7 +67,8 @@ public class HCBCModule {
     }
 
     private boolean dimensionsMatch(HCBCTree tree, Image img) {
-        return tree.getBlockWidth() == img.getWidth() && tree.getBlockHeight() == img.getHeight();
+        final HCBCBlock element = tree.getElement();
+        return element.getWidth() == img.getWidth() && element.getHeight() == img.getHeight();
     }
 
     public double[][][] calculateTC(Image img) {

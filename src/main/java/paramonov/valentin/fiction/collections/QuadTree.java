@@ -3,16 +3,13 @@ package paramonov.valentin.fiction.collections;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-public abstract class QuadTree<T extends QuadTree<T, E>, E> implements Iterable<T> {
-    private E element;
+public abstract class QuadTree<T extends QuadTree<T, B>, B extends Block> implements Iterable<T> {
+    private B element;
     T[] children;
 
-    protected abstract void init();
-
-    public boolean add(E element) {
+    public boolean add(B block) {
         if(this.element == null) {
-            this.element = element;
-            init();
+            this.element = block;
             return true;
         }
 
@@ -20,8 +17,8 @@ public abstract class QuadTree<T extends QuadTree<T, E>, E> implements Iterable<
             children = (T[]) Array.newInstance(getClass(), 4);
         }
 
-        final int place = findPlace(element);
-        if(place == -1) {
+        final int place = findPlace(block);
+        if(place < 0) {
             return false;
         }
 
@@ -33,12 +30,45 @@ public abstract class QuadTree<T extends QuadTree<T, E>, E> implements Iterable<
             }
         }
 
-        return children[place].add(element);
+        return children[place].add(block);
     }
 
-    protected abstract int findPlace(E element);
+    protected final int findPlace(B block) {
+        final B element = this.element;
+        final int elementX = element.getX();
+        final int elementY = element.getY();
+        final int elementW = element.getWidth();
+        final int elementH = element.getHeight();
+        final int blockX = block.getX();
+        final int blockY = block.getY();
+        final int blockW = block.getWidth();
+        final int blockH = block.getHeight();
 
-    public E getElement() {
+        return quad(elementX, elementW, blockX, blockW) + 2 * quad(elementY, elementH, blockY, blockH);
+    }
+
+    private int quad(int regionStart, int regionWidth, int blockX, int blockW) {
+        if(regionStart == blockX && regionWidth == blockW) {
+            return -1;
+        }
+
+        final int regionEnd = regionStart + regionWidth;
+        final int blockEnd = blockX + blockW;
+
+        if(blockX < regionStart || blockEnd > regionEnd) {
+            throw new BlockDimensionsException();
+        }
+
+        final int regionHalf = (regionStart + regionEnd + 1) / 2;
+
+        if(blockEnd <= regionHalf) {
+            return 0;
+        }
+
+        return 1;
+    }
+
+    public B getElement() {
         return element;
     }
 
